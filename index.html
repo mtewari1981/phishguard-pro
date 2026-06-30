@@ -474,30 +474,33 @@ async function checkLiveThreats(url) {
   try { parsed = new URL(url); } catch(e) { return []; }
   const domain = parsed.hostname;
 
-  // URLScan.io — no key needed, CORS supported
+  // URLScan.io — no key needed; CORS may be blocked in some browsers
+  const urlscanLink = `<a href="https://urlscan.io/search/#page.domain:${encodeURIComponent(domain)}" target="_blank" style="color:var(--blue)">Search URLScan.io manually ↗</a>`;
   try {
-    const r = await fetch(`https://urlscan.io/api/v1/search/?q=page.domain:${encodeURIComponent(domain)}&size=3`);
+    const r = await fetch(`https://urlscan.io/api/v1/search/?q=page.domain:${encodeURIComponent(domain)}&size=3`, {
+      headers: { 'Accept': 'application/json' }
+    });
     if (r.ok) {
       const data = await r.json();
       if (data.results && data.results.length > 0) {
         const latest = data.results[0];
         const malicious = latest.verdicts?.overall?.malicious || false;
         const score = latest.verdicts?.overall?.score || 0;
-        const scanLink = latest.result ? `<a href="${latest.result}" target="_blank" style="color:var(--blue)">View scan ↗</a>` : '';
+        const scanLink = latest.result ? `<a href="${latest.result}" target="_blank" style="color:var(--blue)">View latest scan ↗</a>` : '';
         results.push({
           source: 'URLScan.io', icon: '🔭',
           verdict: malicious ? 'MALICIOUS' : score > 50 ? 'SUSPICIOUS' : 'CLEAN',
           cls: malicious ? 'ls-malicious' : score > 50 ? 'ls-suspicious' : 'ls-clean',
-          detail: `${data.total} scan(s) found for this domain · Score: ${score}/100 · ${scanLink}`
+          detail: `${data.total} scan(s) found · Score: ${score}/100 · ${scanLink}`
         });
       } else {
-        results.push({ source: 'URLScan.io', icon: '🔭', verdict: 'NO RECORDS', cls: 'ls-none', detail: 'No previous scans found for this domain' });
+        results.push({ source: 'URLScan.io', icon: '🔭', verdict: 'NO RECORDS', cls: 'ls-none', detail: `No previous scans found for this domain · ${urlscanLink}` });
       }
     } else {
-      results.push({ source: 'URLScan.io', icon: '🔭', verdict: 'ERROR', cls: 'ls-none', detail: `API returned ${r.status}` });
+      results.push({ source: 'URLScan.io', icon: '🔭', verdict: 'NO RECORDS', cls: 'ls-none', detail: `No data returned · ${urlscanLink}` });
     }
   } catch(e) {
-    results.push({ source: 'URLScan.io', icon: '🔭', verdict: 'UNAVAILABLE', cls: 'ls-none', detail: 'Could not reach URLScan.io' });
+    results.push({ source: 'URLScan.io', icon: '🔭', verdict: 'BLOCKED', cls: 'ls-none', detail: `Browser security blocked the API call (CORS) · ${urlscanLink}` });
   }
 
   // PhishTank — requires free app key
