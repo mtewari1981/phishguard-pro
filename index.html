@@ -1,0 +1,1143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PhishGuard Pro — Multi-Sector Cybersecurity Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0f1e;--bg2:#0f1628;--bg3:#151d35;--bg4:#1a2340;
+  --border:#1e2d50;--border2:#2a3f6e;
+  --accent:#00c9a7;--accent-dim:#00a589;
+  --accent-bg:rgba(0,201,167,0.08);--accent-border:rgba(0,201,167,0.25);
+  --red:#ff4757;--red-bg:rgba(255,71,87,0.08);--red-border:rgba(255,71,87,0.3);
+  --amber:#ffa502;--amber-bg:rgba(255,165,2,0.08);--amber-border:rgba(255,165,2,0.3);
+  --blue:#4a9eff;--blue-bg:rgba(74,158,255,0.08);--blue-border:rgba(74,158,255,0.25);
+  --purple:#a55eea;--purple-bg:rgba(165,94,234,0.08);--purple-border:rgba(165,94,234,0.25);
+  --green:#2ed573;--green-bg:rgba(46,213,115,0.08);--green-border:rgba(46,213,115,0.25);
+  --text:#e8edf8;--text2:#8b98b8;--text3:#5a6580;
+}
+body{font-family:'IBM Plex Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.6}
+
+/* HEADER */
+.header{background:var(--bg2);border-bottom:1px solid var(--border);padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.header-left{display:flex;align-items:center;gap:16px}
+.logo-icon{width:44px;height:44px;background:var(--accent-bg);border:1px solid var(--accent-border);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px}
+.logo-title{font-family:'IBM Plex Mono',monospace;font-size:1.05rem;font-weight:600;color:var(--accent);letter-spacing:-0.3px}
+.logo-sub{font-size:0.72rem;color:var(--text2);margin-top:2px}
+.header-right{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.hbadge{font-family:'IBM Plex Mono',monospace;font-size:0.68rem;padding:4px 10px;border-radius:4px;border:1px solid var(--border2);color:var(--text2);background:var(--bg3)}
+.hbadge.live{border-color:var(--accent-border);color:var(--accent);background:var(--accent-bg)}
+
+/* SECTOR SELECTOR */
+.sector-bar{background:var(--bg3);border-bottom:1px solid var(--border);padding:0.75rem 2rem;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.sector-label{font-family:'IBM Plex Mono',monospace;font-size:0.72rem;color:var(--text2);text-transform:uppercase;letter-spacing:0.5px;margin-right:4px}
+.sector-btn{font-family:'IBM Plex Mono',monospace;font-size:0.75rem;padding:6px 14px;border-radius:6px;border:1px solid var(--border2);background:var(--bg4);color:var(--text2);cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:6px}
+.sector-btn:hover{border-color:var(--accent-border);color:var(--text)}
+.sector-btn.active{border-color:var(--accent-border);color:var(--accent);background:var(--accent-bg)}
+.sector-btn.s-finance.active{border-color:var(--blue-border);color:var(--blue);background:var(--blue-bg)}
+.sector-btn.s-government.active{border-color:var(--amber-border);color:var(--amber);background:var(--amber-bg)}
+.sector-btn.s-education.active{border-color:var(--purple-border);color:var(--purple);background:var(--purple-bg)}
+.sector-btn.s-enterprise.active{border-color:var(--green-border);color:var(--green);background:var(--green-bg)}
+
+/* SECTOR CONTEXT BANNER */
+.sector-context{padding:10px 2rem;border-bottom:1px solid var(--border);font-size:0.78rem;color:var(--text2);display:flex;align-items:center;gap:10px}
+.sector-context span{font-family:'IBM Plex Mono',monospace;font-size:0.68rem;padding:3px 10px;border-radius:4px;border:1px solid var(--accent-border);color:var(--accent);background:var(--accent-bg)}
+
+/* TABS */
+.tabs{display:flex;background:var(--bg2);border-bottom:1px solid var(--border);padding:0 2rem;overflow-x:auto}
+.tab{font-family:'IBM Plex Mono',monospace;font-size:0.78rem;padding:12px 18px;cursor:pointer;border-bottom:2px solid transparent;color:var(--text2);transition:all 0.2s;display:flex;align-items:center;gap:7px;white-space:nowrap}
+.tab:hover{color:var(--text)}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+
+/* LAYOUT */
+.container{max-width:1100px;margin:0 auto;padding:1.5rem 2rem}
+.panel{display:none}.panel.active{display:block}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem}
+@media(max-width:900px){.grid2,.grid3{grid-template-columns:1fr}}
+.full{grid-column:1/-1}
+
+/* CARDS */
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:1.25rem}
+.card-title{font-family:'IBM Plex Mono',monospace;font-size:0.78rem;color:var(--accent);letter-spacing:0.5px;text-transform:uppercase;margin-bottom:1rem;display:flex;align-items:center;gap:8px}
+
+/* METRICS */
+.metrics{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:1.25rem}
+@media(max-width:700px){.metrics{grid-template-columns:repeat(3,1fr)}}
+.metric{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:12px;text-align:center}
+.metric-num{font-family:'IBM Plex Mono',monospace;font-size:1.5rem;font-weight:600}
+.metric-num.teal{color:var(--accent)}
+.metric-num.red{color:var(--red)}
+.metric-num.amber{color:var(--amber)}
+.metric-num.blue{color:var(--blue)}
+.metric-num.purple{color:var(--purple)}
+.metric-label{font-size:0.68rem;color:var(--text2);margin-top:3px}
+
+/* FORM */
+label{display:block;font-size:0.72rem;font-weight:500;color:var(--text2);margin-bottom:5px;margin-top:14px;font-family:'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:0.4px}
+label:first-of-type{margin-top:0}
+input,textarea,select{width:100%;padding:9px 13px;background:var(--bg3);border:1px solid var(--border2);border-radius:7px;font-size:0.85rem;font-family:'IBM Plex Sans',sans-serif;color:var(--text);transition:border-color 0.2s}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,201,167,0.1)}
+textarea{resize:vertical;min-height:120px}
+input::placeholder,textarea::placeholder{color:var(--text3)}
+
+.btn{display:inline-flex;align-items:center;gap:8px;padding:10px 22px;border-radius:7px;font-size:0.85rem;font-weight:600;cursor:pointer;border:none;font-family:'IBM Plex Sans',sans-serif;transition:all 0.2s;width:100%;justify-content:center;margin-top:14px}
+.btn-primary{background:var(--accent);color:#0a0f1e}
+.btn-primary:hover{background:var(--accent-dim)}
+
+/* SAMPLE BTNS */
+.sample-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px}
+.sample-btn{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:8px 10px;cursor:pointer;font-size:0.75rem;color:var(--text2);font-family:'IBM Plex Sans',sans-serif;text-align:left;transition:all 0.15s}
+.sample-btn:hover{border-color:var(--accent-border);color:var(--accent);background:var(--accent-bg)}
+.sample-btn .sl{font-size:0.65rem;color:var(--text3);display:block;margin-bottom:2px;font-family:'IBM Plex Mono',monospace}
+
+/* RESULTS */
+.result-banner{border-radius:8px;padding:14px 16px;margin-bottom:1rem;display:flex;align-items:center;gap:12px}
+.result-banner.danger{background:var(--red-bg);border:1px solid var(--red-border)}
+.result-banner.warning{background:var(--amber-bg);border:1px solid var(--amber-border)}
+.result-banner.safe{background:var(--accent-bg);border:1px solid var(--accent-border)}
+.result-icon{font-size:1.4rem;flex-shrink:0}
+.result-verdict{font-family:'IBM Plex Mono',monospace;font-size:0.9rem;font-weight:600}
+.result-banner.danger .result-verdict{color:var(--red)}
+.result-banner.warning .result-verdict{color:var(--amber)}
+.result-banner.safe .result-verdict{color:var(--accent)}
+.result-score{font-size:0.72rem;color:var(--text2);margin-top:2px}
+
+.score-bar{height:6px;border-radius:99px;background:var(--bg4);margin:10px 0;overflow:hidden}
+.score-fill{height:100%;border-radius:99px;transition:width 0.8s cubic-bezier(.4,0,.2,1)}
+.fill-safe{background:var(--accent)}
+.fill-warn{background:var(--amber)}
+.fill-danger{background:var(--red)}
+
+/* FINDINGS */
+.findings-title{font-family:'IBM Plex Mono',monospace;font-size:0.7rem;color:var(--text2);text-transform:uppercase;letter-spacing:0.5px;margin:14px 0 8px}
+.finding{background:var(--bg3);border:1px solid var(--border);border-radius:7px;padding:10px 12px;margin-bottom:7px;display:flex;gap:10px;align-items:flex-start}
+.finding.critical{border-color:var(--red-border);background:var(--red-bg)}
+.finding.warning{border-color:var(--amber-border);background:var(--amber-bg)}
+.finding.safe{border-color:var(--accent-border);background:var(--accent-bg)}
+.finding-icon{font-size:14px;flex-shrink:0;margin-top:1px}
+.finding-text{font-size:0.78rem;color:var(--text)}
+.finding.critical .finding-text{color:#ffb3b8}
+.finding.warning .finding-text{color:#ffd580}
+.finding.safe .finding-text{color:#80e8d4}
+.comp-ref{display:inline-flex;align-items:center;gap:4px;font-family:'IBM Plex Mono',monospace;font-size:0.65rem;padding:2px 8px;border-radius:3px;background:var(--blue-bg);border:1px solid var(--blue-border);color:var(--blue);margin-top:5px}
+
+/* HISTORY */
+.history-item{background:var(--bg3);border:1px solid var(--border);border-radius:7px;padding:10px 14px;margin-bottom:7px;display:flex;align-items:center;gap:12px}
+.history-verdict{font-family:'IBM Plex Mono',monospace;font-size:0.63rem;font-weight:600;padding:3px 8px;border-radius:3px;flex-shrink:0}
+.hv-safe{background:var(--accent-bg);color:var(--accent);border:1px solid var(--accent-border)}
+.hv-warn{background:var(--amber-bg);color:var(--amber);border:1px solid var(--amber-border)}
+.hv-danger{background:var(--red-bg);color:var(--red);border:1px solid var(--red-border)}
+.history-info{flex:1;min-width:0}
+.history-main{font-size:0.82rem;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.history-sub{font-size:0.7rem;color:var(--text2);margin-top:1px}
+.history-score{font-family:'IBM Plex Mono',monospace;font-size:0.78rem;font-weight:600;flex-shrink:0}
+
+/* COMPLIANCE PANEL */
+.comp-section{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:10px}
+.comp-section-title{font-family:'IBM Plex Mono',monospace;font-size:0.73rem;color:var(--blue);margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.comp-control{font-size:0.75rem;color:var(--text2);padding:5px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;gap:8px}
+.comp-control:last-child{border-bottom:none}
+.comp-status{font-family:'IBM Plex Mono',monospace;font-size:0.63rem;padding:2px 7px;border-radius:3px;white-space:nowrap}
+.cs-risk{background:var(--red-bg);color:var(--red);border:1px solid var(--red-border)}
+.cs-ok{background:var(--accent-bg);color:var(--accent);border:1px solid var(--accent-border)}
+.cs-monitor{background:var(--bg4);color:var(--text3);border:1px solid var(--border)}
+
+/* DASHBOARD */
+.sector-stat{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:14px;display:flex;align-items:center;justify-content:space-between}
+.sector-stat-left{display:flex;align-items:center;gap:12px}
+.sector-icon-big{font-size:1.6rem}
+.sector-stat-name{font-family:'IBM Plex Mono',monospace;font-size:0.82rem;color:var(--text)}
+.sector-stat-comp{font-size:0.7rem;color:var(--text2)}
+.sector-stat-right{text-align:right}
+.sector-stat-count{font-family:'IBM Plex Mono',monospace;font-size:1.4rem;font-weight:600;color:var(--accent)}
+.sector-stat-label{font-size:0.68rem;color:var(--text2)}
+
+/* URL */
+.url-result{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px}
+.url-display{font-family:'IBM Plex Mono',monospace;font-size:0.72rem;color:var(--text2);word-break:break-all;margin-bottom:10px;padding:8px;background:var(--bg4);border-radius:5px;border:1px solid var(--border)}
+.check-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid var(--border);font-size:0.78rem}
+.check-row:last-child{border-bottom:none}
+.check-label{color:var(--text2);font-family:'IBM Plex Mono',monospace;font-size:0.68rem}
+.check-val{font-family:'IBM Plex Mono',monospace;font-size:0.66rem;padding:2px 8px;border-radius:3px}
+.cv-pass{background:var(--accent-bg);color:var(--accent);border:1px solid var(--accent-border)}
+.cv-fail{background:var(--red-bg);color:var(--red);border:1px solid var(--red-border)}
+.cv-warn{background:var(--amber-bg);color:var(--amber);border:1px solid var(--amber-border)}
+.cv-na{background:var(--bg4);color:var(--text3);border:1px solid var(--border)}
+
+/* TAGS */
+.tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px}
+.tag{font-size:0.68rem;padding:3px 9px;border-radius:3px;font-family:'IBM Plex Mono',monospace}
+.tag-red{background:var(--red-bg);color:var(--red);border:1px solid var(--red-border)}
+.tag-amber{background:var(--amber-bg);color:var(--amber);border:1px solid var(--amber-border)}
+.tag-teal{background:var(--accent-bg);color:var(--accent);border:1px solid var(--accent-border)}
+
+/* EMPTY */
+.empty{text-align:center;padding:36px 20px;color:var(--text3)}
+.empty-icon{font-size:2.2rem;margin-bottom:10px;opacity:0.5}
+.empty-text{font-size:0.82rem}
+
+.note-box{padding:12px;background:var(--blue-bg);border:1px solid var(--blue-border);border-radius:7px;margin-top:10px;font-size:0.78rem;color:var(--text2);line-height:1.7}
+.note-title{font-family:'IBM Plex Mono',monospace;font-size:0.7rem;color:var(--blue);margin-bottom:5px}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-left">
+    <div class="logo-icon">🛡️</div>
+    <div>
+      <div class="logo-title">PhishGuard Pro</div>
+      <div class="logo-sub">Multi-Sector Phishing & Threat Detection Platform · Open Source · Free</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <span class="hbadge live">● Active</span>
+    <span class="hbadge">HIPAA</span>
+    <span class="hbadge">PCI-DSS</span>
+    <span class="hbadge">FISMA</span>
+    <span class="hbadge">FERPA</span>
+    <span class="hbadge">ISO 27001</span>
+    <span class="hbadge">v3.0</span>
+  </div>
+</div>
+
+<!-- SECTOR SELECTOR -->
+<div class="sector-bar">
+  <span class="sector-label">Active Sector:</span>
+  <button class="sector-btn s-healthcare active" onclick="setSector('healthcare')">🏥 Healthcare</button>
+  <button class="sector-btn s-finance" onclick="setSector('finance')">🏦 Finance</button>
+  <button class="sector-btn s-government" onclick="setSector('government')">🏛 Government</button>
+  <button class="sector-btn s-education" onclick="setSector('education')">🎓 Education</button>
+  <button class="sector-btn s-enterprise" onclick="setSector('enterprise')">🏢 Enterprise</button>
+</div>
+
+<!-- SECTOR CONTEXT -->
+<div class="sector-context" id="sector-context">
+  <span id="sector-badge">🏥 HEALTHCARE</span>
+  <span id="sector-desc">Detection rules active: EHR spoofing · PHI keywords · Medicare fraud · Ransomware · BEC · HIPAA compliance mapping</span>
+</div>
+
+<!-- TABS -->
+<div class="tabs">
+  <div class="tab active" onclick="switchTab('email')">📧 Email Phishing Analyzer</div>
+  <div class="tab" onclick="switchTab('url')">🔗 URL / Web Traffic Checker</div>
+  <div class="tab" onclick="switchTab('compliance')">📋 Compliance Framework</div>
+  <div class="tab" onclick="switchTab('dashboard')">📊 Dashboard</div>
+</div>
+
+<!-- ══════════════════ EMAIL PANEL ══════════════════ -->
+<div class="panel active" id="panel-email">
+<div class="container">
+  <div class="metrics">
+    <div class="metric"><div class="metric-num teal" id="e-total">0</div><div class="metric-label">Analyzed</div></div>
+    <div class="metric"><div class="metric-num red" id="e-phish">0</div><div class="metric-label">Phishing</div></div>
+    <div class="metric"><div class="metric-num amber" id="e-susp">0</div><div class="metric-label">Suspicious</div></div>
+    <div class="metric"><div class="metric-num teal" id="e-safe">0</div><div class="metric-label">Clean</div></div>
+    <div class="metric"><div class="metric-num blue" id="e-sector">0</div><div class="metric-label">Sector Hits</div></div>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <div class="card-title">📨 Analyze Email</div>
+      <label>Sender Email Address</label>
+      <input type="text" id="e-sender" placeholder="sender@example.com">
+      <label>Reply-To Address (if different)</label>
+      <input type="text" id="e-replyto" placeholder="Leave blank if same as sender">
+      <label>Subject Line</label>
+      <input type="text" id="e-subject" placeholder="Email subject line">
+      <label>Email Body</label>
+      <textarea id="e-body" placeholder="Paste the full email body here..."></textarea>
+      <button class="btn btn-primary" onclick="analyzeEmail()">🔍 Analyze Email</button>
+      <label style="margin-top:16px">Sector Sample Scenarios</label>
+      <div class="sample-grid" id="sample-grid"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🔬 Analysis Results</div>
+      <div id="e-results">
+        <div class="empty"><div class="empty-icon">📭</div><div class="empty-text">Submit an email above<br>to see threat analysis</div></div>
+      </div>
+    </div>
+
+    <div class="card full">
+      <div class="card-title">📋 Scan History</div>
+      <div id="e-history"><div class="empty"><div class="empty-text">No emails analyzed yet</div></div></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════ URL PANEL ══════════════════ -->
+<div class="panel" id="panel-url">
+<div class="container">
+  <div class="metrics">
+    <div class="metric"><div class="metric-num teal" id="u-total">0</div><div class="metric-label">Checked</div></div>
+    <div class="metric"><div class="metric-num red" id="u-malicious">0</div><div class="metric-label">Malicious</div></div>
+    <div class="metric"><div class="metric-num amber" id="u-suspicious">0</div><div class="metric-label">Suspicious</div></div>
+    <div class="metric"><div class="metric-num teal" id="u-safe">0</div><div class="metric-label">Safe</div></div>
+    <div class="metric"><div class="metric-num blue" id="u-sector">0</div><div class="metric-label">Sector Hits</div></div>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <div class="card-title">🔗 URL / Web Traffic Check</div>
+      <label>URL to Analyze</label>
+      <input type="text" id="u-url" placeholder="https://example.com/page">
+      <label>How was this URL encountered?</label>
+      <select id="u-context">
+        <option value="">Select context...</option>
+        <option value="email">Found in email</option>
+        <option value="browser">Encountered in browser</option>
+        <option value="text">Received via text/SMS</option>
+        <option value="document">Found in document</option>
+        <option value="qrcode">Scanned QR code</option>
+      </select>
+      <button class="btn btn-primary" onclick="analyzeURL()">🔍 Analyze URL</button>
+      <label style="margin-top:16px">URL Samples</label>
+      <div class="sample-grid" id="url-sample-grid"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🔬 URL Analysis Results</div>
+      <div id="u-results">
+        <div class="empty"><div class="empty-icon">🔗</div><div class="empty-text">Enter a URL above<br>to check for threats</div></div>
+      </div>
+    </div>
+
+    <div class="card full">
+      <div class="card-title">📋 URL Check History</div>
+      <div id="u-history"><div class="empty"><div class="empty-text">No URLs checked yet</div></div></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════ COMPLIANCE PANEL ══════════════════ -->
+<div class="panel" id="panel-compliance">
+<div class="container">
+  <div class="grid2">
+    <div class="card">
+      <div class="card-title">📋 Active Compliance Framework</div>
+      <div id="compliance-content"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">🎯 Sector Threat Landscape</div>
+      <div id="threat-landscape"></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════ DASHBOARD PANEL ══════════════════ -->
+<div class="panel" id="panel-dashboard">
+<div class="container">
+  <div class="grid2">
+    <div class="card">
+      <div class="card-title">📊 All-Sector Scan Summary</div>
+      <div id="dashboard-sectors"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">🔥 Top Threat Indicators Detected</div>
+      <div id="dashboard-threats"></div>
+    </div>
+    <div class="card full">
+      <div class="card-title">📈 Detection Statistics</div>
+      <div class="grid3" id="dashboard-stats">
+        <div class="metric"><div class="metric-num teal" id="d-total-scans">0</div><div class="metric-label">Total Scans</div></div>
+        <div class="metric"><div class="metric-num red" id="d-total-malicious">0</div><div class="metric-label">Malicious / Phishing</div></div>
+        <div class="metric"><div class="metric-num amber" id="d-total-suspicious">0</div><div class="metric-label">Suspicious</div></div>
+        <div class="metric"><div class="metric-num teal" id="d-total-clean">0</div><div class="metric-label">Clean</div></div>
+        <div class="metric"><div class="metric-num blue" id="d-detection-rate">0%</div><div class="metric-label">Detection Rate</div></div>
+        <div class="metric"><div class="metric-num purple" id="d-sectors-used">0</div><div class="metric-label">Sectors Active</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════
+//  SECTOR DEFINITIONS
+// ═══════════════════════════════════════════════════
+const SECTORS = {
+  healthcare: {
+    name: 'Healthcare', icon: '🏥', color: '#00c9a7',
+    compliance: 'HIPAA §164.308 / §164.312',
+    desc: 'Detection rules active: EHR spoofing · PHI keywords · Medicare fraud · Ransomware · BEC · HIPAA compliance mapping',
+    spoofDomains: [/ep1c/i,/cern3r/i,/meditek/i,/athen4/i,/mychartsecure/i,/epic-verify/i,/epicehr/i,/epicems/i],
+    spoofNames: ['EPIC','Cerner','Meditech','Athenahealth','MyChart','Allscripts'],
+    legitimateDomains: ['epic.com','cerner.com','athenahealth.com','cms.gov','hhs.gov','cdc.gov','nih.gov'],
+    sectorKeywords: ['phi','ephi','patient','medical record','health record','diagnosis','prescription','ehr','emr','hipaa','npi','medicare','medicaid','insurance id','member id'],
+    complianceRef: (code,label) => `<span class="comp-ref">⚖️ HIPAA ${code} · ${label}</span>`,
+    emailSamples: [
+      {key:'epic',label:'EPIC Credential Phish',icon:'⚠️ EHR Phishing',
+       sender:'security@mychartsecure-epic.tk',replyTo:'harvest@attacker.ru',
+       subject:'URGENT: Your EPIC EHR Account Suspended',
+       body:'Dear Healthcare Professional,\n\nUnusual activity detected on your EPIC EHR account. Patient record access temporarily suspended.\n\nVerify identity immediately: http://epic-verify-secure.tk/login?provider=12345\n\nFailure to verify within 24 hours results in permanent closure.\n\nEPIC Security Team'},
+      {key:'medicare',label:'Medicare Fraud',icon:'🚨 Medicare',
+       sender:'billing@medicare-cms-gov.ml',replyTo:'',
+       subject:'URGENT: Medicare Billing Irregularity — Action Required',
+       body:'Dear Provider,\n\nCMS detected irregularities in your Medicare billing. Your NPI has been flagged.\n\nUpdate provider credentials: http://cms-medicare-update.ga/verify\n\nSuspension of reimbursements within 48 hours if no action taken.\n\nCMS Billing Compliance'},
+      {key:'ransomware',label:'Ransomware Invoice',icon:'☠️ Ransomware',
+       sender:'invoices@medical-billing.xyz',replyTo:'',
+       subject:'Invoice #MED-2847 — Outstanding Payment',
+       body:'Outstanding invoice for medical billing services.\n\nInvoice #MED-2847 · Amount: $8,450\n\nDownload invoice: http://1.234.56.78/invoice-MED2847.exe\n\nThis invoice contains PHI. Handle per HIPAA guidelines.'},
+      {key:'legit',label:'Legitimate IT Email',icon:'✅ Safe',
+       sender:'it-security@yourhospital.org',replyTo:'',
+       subject:'Monthly IT Security Report — May 2026',
+       body:'Your monthly IT security summary is now available.\n\n0 confirmed incidents · 94% training completion\n\nView report: https://portal.yourhospital.org/security\n\nNever share EHR credentials via email.\n\nIT Security Team'}
+    ],
+    urlSamples: [
+      {key:'m1',label:'Malware EXE',val:'http://1.234.56.78/ehr-update.exe'},
+      {key:'m2',label:'EHR Phishing',val:'https://ep1c-mychartsecure.verify.tk/login'},
+      {key:'m3',label:'Medicare Spoof',val:'https://medicare-cms-billing.ml/provider'},
+      {key:'s1',label:'Legit CMS.gov',val:'https://www.cms.gov/medicare/billing'}
+    ],
+    complianceFramework: {
+      title: 'HIPAA Security Rule',
+      sections: [
+        {title:'Administrative Safeguards · §164.308',controls:[
+          {name:'Security Management Process (§164.308(a)(1))',status:'Monitoring',cls:'cs-monitor'},
+          {name:'Security Awareness Training (§164.308(a)(5))',status:'Phishing Defense',cls:'cs-monitor'},
+          {name:'Security Incident Procedures (§164.308(a)(6))',status:'Detection',cls:'cs-monitor'},
+          {name:'Contingency Plan — Ransomware (§164.308(a)(7))',status:'HIGH RISK',cls:'cs-risk'}
+        ]},
+        {title:'Technical Safeguards · §164.312',controls:[
+          {name:'Access Control — Credential Phishing (§164.312(a)(1))',status:'HIGH RISK',cls:'cs-risk'},
+          {name:'Audit Controls (§164.312(b))',status:'Active',cls:'cs-ok'},
+          {name:'Integrity — PHI Data (§164.312(c)(1))',status:'Monitoring',cls:'cs-monitor'},
+          {name:'Transmission Security (§164.312(e)(1))',status:'HIGH RISK',cls:'cs-risk'}
+        ]}
+      ]
+    },
+    threatLandscape: [
+      {threat:'EHR credential phishing (EPIC, Cerner)',level:'CRITICAL',cls:'cs-risk'},
+      {threat:'Medicare/Medicaid billing fraud',level:'HIGH',cls:'cs-risk'},
+      {threat:'PHI exfiltration via email',level:'CRITICAL',cls:'cs-risk'},
+      {threat:'Ransomware via malicious attachments',level:'CRITICAL',cls:'cs-risk'},
+      {threat:'Business Email Compromise (BEC)',level:'HIGH',cls:'cs-risk'},
+      {threat:'Supply chain / vendor impersonation',level:'MEDIUM',cls:'cs-monitor'},
+    ]
+  },
+
+  finance: {
+    name: 'Finance', icon: '🏦', color: '#4a9eff',
+    compliance: 'PCI-DSS v4 / SOX / GLBA',
+    desc: 'Detection rules active: Bank spoofing · Wire fraud · Card data phishing · Account takeover · PCI-DSS compliance mapping',
+    spoofDomains: [/chase-secure/i,/bankofamerica-/i,/wellsfarg0/i,/paypa1/i,/quickb00ks/i,/str1pe/i,/adp-payroll/i,/irs-refund/i,/irs-alert/i],
+    spoofNames: ['Chase','Bank of America','Wells Fargo','PayPal','QuickBooks','Stripe','ADP','IRS'],
+    legitimateDomains: ['chase.com','bankofamerica.com','wellsfargo.com','paypal.com','irs.gov','sec.gov','fdic.gov'],
+    sectorKeywords: ['wire transfer','ach','routing number','account number','swift','iban','tax refund','w-2','1099','audit','sox','pci','cardholder','credit card','cvv','pin','401k','portfolio','beneficiary','bank account','financial statement'],
+    complianceRef: (code,label) => `<span class="comp-ref">💳 ${code} · ${label}</span>`,
+    emailSamples: [
+      {key:'wire',label:'Wire Fraud / BEC',icon:'💼 BEC',
+       sender:'cfo.johnson@gmail.com',replyTo:'payments@offshore-bank.ga',
+       subject:'Confidential — Urgent Wire Transfer Required Today',
+       body:'CONFIDENTIAL. Do not discuss with anyone.\n\nI am in a board meeting, cannot take calls. Process urgent wire transfer of $145,000 to our new vendor account today.\n\nBank: Global Finance Holdings\nAccount: 8823-9471-2038\nRouting: 021000089\nAmount: $145,000\n\nProcess immediately.\n\nCFO Johnson'},
+      {key:'phish',label:'Bank Account Phish',icon:'⚠️ Bank Spoof',
+       sender:'security@chase-secure-alert.tk',replyTo:'',
+       subject:'URGENT: Chase Account Suspended — Verify Now',
+       body:'Your Chase account has been suspended due to suspicious activity.\n\nVerify your identity immediately to restore access:\nhttp://chase-secure-verify.ml/login\n\nProvide your account number, routing number, and SSN to confirm identity.\n\n24 hours to verify or account will be permanently closed.\n\nChase Security Team'},
+      {key:'irs',label:'IRS Tax Phishing',icon:'🚨 IRS Spoof',
+       sender:'refund@irs-refund-gov.xyz',replyTo:'',
+       subject:'IRS Tax Refund Pending — Verify Bank Details',
+       body:'Your federal tax refund of $3,847.00 is pending.\n\nVerify your bank account and routing number to receive your refund:\nhttp://irs-refund-portal.tk/verify?id=TX2026\n\nFailure to verify within 72 hours will result in refund cancellation.\n\nIRS Refund Department'},
+      {key:'legit',label:'Legitimate SEC Alert',icon:'✅ Safe',
+       sender:'investor-alerts@sec.gov',replyTo:'',
+       subject:'SEC Investor Alert — Phishing Awareness Update',
+       body:'The SEC is aware of fraudulent emails impersonating SEC staff.\n\nReminder: The SEC never asks for bank account numbers, wire transfers, or personal financial data via email.\n\nReport suspicious emails: https://www.sec.gov/tcr\n\nSEC Investor Education and Advocacy'}
+    ],
+    urlSamples: [
+      {key:'m1',label:'Bank Phishing',val:'http://chase-secure-verify.ml/login?acct=12345'},
+      {key:'m2',label:'IRS Spoof',val:'https://irs-refund-portal.tk/verify'},
+      {key:'m3',label:'PayPal Spoof',val:'http://paypa1-secure.verify-account.xyz/login'},
+      {key:'s1',label:'Legit IRS.gov',val:'https://www.irs.gov/refunds'}
+    ],
+    complianceFramework: {
+      title: 'PCI-DSS v4 / SOX / GLBA',
+      sections: [
+        {title:'PCI-DSS v4 — Cardholder Data Protection',controls:[
+          {name:'Req 5: Protect against malware / phishing',status:'HIGH RISK',cls:'cs-risk'},
+          {name:'Req 7: Restrict access to system components',status:'Monitoring',cls:'cs-monitor'},
+          {name:'Req 8: Identify users and authenticate access',status:'HIGH RISK',cls:'cs-risk'},
+          {name:'Req 12: Support info security with policies',status:'Active',cls:'cs-ok'}
+        ]},
+        {title:'SOX — Sarbanes-Oxley Financial Controls',controls:[
+          {name:'Section 302: Corporate responsibility for reports',status:'BEC Risk',cls:'cs-risk'},
+          {name:'Section 404: Management assessment of controls',status:'Monitoring',cls:'cs-monitor'},
+          {name:'Section 802: Document destruction prevention',status:'Active',cls:'cs-ok'}
+        ]},
+        {title:'GLBA — Gramm-Leach-Bliley Act',controls:[
+          {name:'Safeguards Rule: Protect customer information',status:'HIGH RISK',cls:'cs-risk'},
+          {name:'Privacy Rule: Customer data disclosure limits',status:'Monitoring',cls:'cs-monitor'}
+        ]}
+      ]
+    },
+    threatLandscape: [
+      {threat:'Business Email Compromise (wire fraud)',level:'CRITICAL',cls:'cs-risk'},
+      {threat:'Bank/payment platform credential phishing',level:'CRITICAL',cls:'cs-risk'},
+      {threat:'IRS/tax authority impersonation',level:'HIGH',cls:'cs-risk'},
+      {threat:'CEO/CFO executive impersonation',level:'HIGH',cls:'cs-risk'},
+      {threat:'Fake ACH/wire payment confirmations',level:'HIGH',cls:'cs-risk'},
+      {threat:'Payroll diversion via HR impersonation',level:'MEDIUM',cls:'cs-monitor'}
+    ]
+  },
+
+  government: {
+    name: 'Government', icon: '🏛', color: '#ffa502',
+    compliance: 'FISMA / NIST SP 800-53 / CMMC',
+    desc: 'Detection rules active: Gov system spoofing · Clearance phishing · PIV/CAC fraud · Federal agency impersonation · FISMA compliance mapping',
+    spoofDomains: [/usajobs-/i,/login-gov\./i,/va-benefits/i,/dod-portal/i,/fema-relief/i,/ssa-benefit/i,/grants-gov\./i,/whitehouse-/i,/pentagon-/i],
+    spoofNames: ['USAJobs','Login.gov','VA','DoD','FEMA','SSA','Grants.gov','GSA'],
+    legitimateDomains: ['usa.gov','login.gov','usajobs.gov','va.gov','dod.gov','fema.gov','ssa.gov','grants.gov','gsa.gov','cisa.gov'],
+    sectorKeywords: ['security clearance','classified','top secret','piv card','cac','fouo','for official use only','federal employee','agency','department of','executive order','omb','appropriation','government contract','solicitation','rfi','rfp','gsa schedule','sam.gov'],
+    complianceRef: (code,label) => `<span class="comp-ref">🏛 ${code} · ${label}</span>`,
+    emailSamples: [
+      {key:'clearance',label:'Clearance Renewal Phish',icon:'🚨 Clearance',
+       sender:'security@dod-clearance-renewal.tk',replyTo:'',
+       subject:'URGENT: Security Clearance Renewal Required — 48 Hours',
+       body:'Your federal security clearance is scheduled for immediate review and must be renewed within 48 hours.\n\nAccess the clearance renewal portal: http://dod-clearance-portal.ml/login\n\nProvide your SSN, current clearance level, and PIV card number to complete renewal.\n\nFailure to respond will result in clearance suspension.\n\nDefense Security Service'},
+      {key:'fema',label:'FEMA Disaster Relief Phish',icon:'⚠️ FEMA Spoof',
+       sender:'relief@fema-disaster-aid.xyz',replyTo:'',
+       subject:'FEMA Disaster Relief Funds — Claim Your $7,500 Today',
+       body:'You have been pre-approved for FEMA disaster relief assistance of $7,500.\n\nClaim your funds immediately: http://fema-relief-claims.tk/apply\n\nProvide bank routing number, account number, and SSN to receive direct deposit.\n\nFunds expire in 24 hours if not claimed.\n\nFEMA Relief Office'},
+      {key:'grant',label:'Fake Government Grant',icon:'💼 Grant Fraud',
+       sender:'grants@government-funding-awards.ml',replyTo:'collect@offshore.ga',
+       subject:'You Have Been Selected for a $45,000 Federal Grant',
+       body:'Congratulations! Your organization has been selected to receive a federal grant of $45,000 under the Small Business Innovation Research program.\n\nTo claim your grant, provide:\n- EIN/Tax ID\n- Bank account and routing number\n- Executive name and SSN\n\nApply immediately: http://sbir-grants-gov.tk/claim\n\nFederal Grant Administration Office'},
+      {key:'legit',label:'Legitimate CISA Advisory',icon:'✅ Safe',
+       sender:'alerts@cisa.gov',replyTo:'',
+       subject:'CISA Advisory: Phishing Campaign Targeting Federal Agencies',
+       body:'CISA is aware of an active phishing campaign targeting federal employees.\n\nKey indicators:\n- Fake clearance renewal emails\n- Spoofed Login.gov pages\n- Requests for PIV/CAC numbers via email\n\nReport phishing: https://www.cisa.gov/report\n\nCISA Security Operations'}
+    ],
+    urlSamples: [
+      {key:'m1',label:'Clearance Portal Spoof',val:'http://dod-clearance-portal.ml/login'},
+      {key:'m2',label:'FEMA Fraud',val:'https://fema-relief-claims.tk/apply'},
+      {key:'m3',label:'Login.gov Spoof',val:'https://login-gov.verify-account.xyz/auth'},
+      {key:'s1',label:'Legit Login.gov',val:'https://secure.login.gov'}
+    ],
+    complianceFramework: {
+      title: 'FISMA / NIST SP 800-53 / CMMC',
+      sections: [
+        {title:'FISMA — Federal Information Security Management Act',controls:[
+          {name:'Risk Management Framework (RMF)',status:'Monitoring',cls:'cs-monitor'},
+          {name:'Continuous Monitoring (ConMon)',status:'Active',cls:'cs-ok'},
+          {name:'Incident Response Planning',status:'HIGH RISK',cls:'cs-risk'},
+          {name:'Security Authorization (ATO)',status:'Monitoring',cls:'cs-monitor'}
+        ]},
+        {title:'NIST SP 800-53 — Security Controls',controls:[
+          {name:'AC-2: Account Management (credential phishing)',status:'HIGH RISK',cls:'cs-risk'},
+          {name:'AT-2: Security Awareness Training',status:'Monitoring',cls:'cs-monitor'},
+          {name:'IR-4: Incident Handling',status:'Active',cls:'cs-ok'},
+          {name:'SI-3: Malicious Code Protection',status:'HIGH RISK',cls:'cs-risk'}
+        ]},
+        {title:'CMMC 2.0 — Cybersecurity Maturity Model',controls:[
+          {name:'AC.1.001: Limit system access to authorized users',status:'HIGH RISK',cls:'cs-risk'},
+          {name:'AT.2.056: Security awareness training',status:'Monitoring',cls:'cs-monitor'},
+          {name:'IR.2.092: Incident reporting and handling',status:'Active',cls:'cs-ok'}
+        ]}
+      ]
+    },
+    threatLandscape: [
+      {threat:'Security clearance phishing',level:'CRITICAL',cls:'cs-risk'},
+      {threat:'Federal agency impersonation (FEMA, IRS, SSA)',level:'CRITICAL',cls:'cs-risk'},
+      {threat:'Login.gov / PIV credential theft',level:'HIGH',cls:'cs-risk'},
+      {threat:'Fake government grant schemes',level:'HIGH',cls:'cs-risk'},
+      {threat:'Spear phishing targeting federal employees',level:'CRITICAL',cls:'cs-risk'},
+      {threat:'Nation-state sponsored phishing campaigns',level:'CRITICAL',cls:'cs-risk'}
+    ]
+  },
+
+  education: {
+    name: 'Education', icon: '🎓', color: '#a55eea',
+    compliance: 'FERPA / CIPA / COPPA',
+    desc: 'Detection rules active: LMS spoofing · Student data phishing · FAFSA fraud · Credential theft · FERPA compliance mapping',
+    spoofDomains: [/canvas-/i,/blackboard-/i,/moodle-/i,/fafsa-aid/i,/studentaid-/i,/turnitin-/i,/banner-login/i,/d2l-/i],
+    spoofNames: ['Canvas','Blackboard','Moodle','FAFSA','StudentAid.gov','Turnitin','Banner','D2L'],
+    legitimateDomains: ['studentaid.gov','ed.gov','canvas.instructure.com','blackboard.com'],
+    sectorKeywords: ['ferpa','student record','transcript','gpa','financial aid','fafsa','student loan','tuition','enrollment','scholarship','fellowship','admissions','degree audit','student id','class registration','gradebook','course access','academic probation','bursar'],
+    complianceRef: (code,label) => `<span class="comp-ref">🎓 ${code} · ${label}</span>`,
+    emailSamples: [
+      {key:'canvas',label:'LMS Credential Phish',icon:'⚠️ Canvas Spoof',
+       sender:'support@canvas-lms-login.tk',replyTo:'',
+       subject:'Canvas Account Suspended — Verify to Restore Course Access',
+       body:'Your Canvas account has been suspended due to a security violation.\n\nRestore access immediately to avoid losing course progress and grades:\nhttp://canvas-lms-verify.ml/student/login\n\nYou must verify within 12 hours or lose access to all enrolled courses.\n\nCanvas Student Support'},
+      {key:'fafsa',label:'FAFSA Financial Aid Phish',icon:'🚨 FAFSA',
+       sender:'aid@fafsa-studentaid-gov.xyz',replyTo:'',
+       subject:'FAFSA Financial Aid Disbursement — Verify Bank Account',
+       body:'Your FAFSA financial aid disbursement of $6,345 is ready.\n\nVerify your bank account to receive your aid: http://fafsa-aid-portal.tk/disbursement\n\nUpdate: SSN, Student ID, bank routing and account number.\n\n48 hours to claim or aid returned to Department of Education.\n\nStudent Financial Aid Office'},
+      {key:'loan',label:'Student Loan Forgiveness Scam',icon:'💼 Loan Scam',
+       sender:'relief@student-loan-forgiveness.ga',replyTo:'data@offshore.ml',
+       subject:'You Qualify for $20,000 Student Loan Forgiveness — Act Now',
+       body:'Based on your enrollment history, you qualify for $20,000 in federal student loan forgiveness.\n\nApply immediately: http://loan-forgiveness-gov.tk/apply\n\nRequired: SSN, Student ID, FAFSA PIN, loan servicer account number.\n\nOffer expires in 48 hours.\n\nDepartment of Education Relief Program'},
+      {key:'legit',label:'Legitimate Ed Department Email',icon:'✅ Safe',
+       sender:'studentaid@ed.gov',replyTo:'',
+       subject:'StudentAid.gov — Annual FAFSA Reminder',
+       body:'The FAFSA application for the 2026-27 academic year is now open.\n\nApply at https://studentaid.gov/h/apply-for-aid/fafsa\n\nNote: We will never ask for your FSA ID password via email.\n\nFederal Student Aid, Office of the U.S. Department of Education'}
+    ],
+    urlSamples: [
+      {key:'m1',label:'LMS Phishing',val:'http://canvas-lms-verify.ml/student/login'},
+      {key:'m2',label:'FAFSA Fraud',val:'https://fafsa-aid-portal.tk/disbursement'},
+      {key:'m3',label:'Loan Scam',val:'https://loan-forgiveness-gov.ga/apply'},
+      {key:'s1',label:'Legit StudentAid.gov',val:'https://studentaid.gov/h/apply-for-aid/fafsa'}
+    ],
+    complianceFramework: {
+      title: 'FERPA / CIPA / COPPA',
+      sections: [
+        {title:'FERPA — Family Educational Rights and Privacy Act',controls:[
+          {name:'Student record access authorization',status:'HIGH RISK',cls:'cs-risk'},
+          {name:'Directory information disclosure limits',status:'Monitoring',cls:'cs-monitor'},
+          {name:'Third-party data sharing restrictions',status:'HIGH RISK',cls:'cs-risk'},
+          {name:'Parental/student consent requirements',status:'Active',cls:'cs-ok'}
+        ]},
+        {title:'CIPA — Children\'s Internet Protection Act',controls:[
+          {name:'Technology protection measures',status:'Monitoring',cls:'cs-monitor'},
+          {name:'Internet safety policy enforcement',status:'Active',cls:'cs-ok'},
+          {name:'Minor safety in online activities',status:'HIGH RISK',cls:'cs-risk'}
+        ]},
+        {title:'COPPA — Children\'s Online Privacy Protection',controls:[
+          {name:'Parental consent for under-13 data collection',status:'HIGH RISK',cls:'cs-risk'},
+          {name:'Limitation on data collection from minors',status:'Monitoring',cls:'cs-monitor'}
+        ]}
+      ]
+    },
+    threatLandscape: [
+      {threat:'LMS credential phishing (Canvas, Blackboard)',level:'HIGH',cls:'cs-risk'},
+      {threat:'FAFSA and financial aid fraud',level:'CRITICAL',cls:'cs-risk'},
+      {threat:'Student loan forgiveness scams',level:'HIGH',cls:'cs-risk'},
+      {threat:'Student record exfiltration (FERPA breach)',level:'CRITICAL',cls:'cs-risk'},
+      {threat:'Ransomware targeting university networks',level:'CRITICAL',cls:'cs-risk'},
+      {threat:'Faculty/staff payroll diversion',level:'MEDIUM',cls:'cs-monitor'}
+    ]
+  },
+
+  enterprise: {
+    name: 'Enterprise', icon: '🏢', color: '#2ed573',
+    compliance: 'ISO 27001 / SOC 2 / NIST CSF',
+    desc: 'Detection rules active: Corporate impersonation · IT helpdesk phishing · Supply chain attacks · BEC · ISO 27001 compliance mapping',
+    spoofDomains: [/microsoft-support/i,/office365-/i,/azure-/i,/google-workspace/i,/dropbox-/i,/docusign-/i,/zoom-/i,/slack-/i,/servicenow-/i],
+    spoofNames: ['Microsoft','Office 365','Azure','Google Workspace','DocuSign','Zoom','Slack','ServiceNow','Salesforce'],
+    legitimateDomains: ['microsoft.com','google.com','dropbox.com','docusign.com','zoom.us','slack.com','salesforce.com'],
+    sectorKeywords: ['it helpdesk','password reset','vpn','mfa','multi-factor','two-factor','active directory','microsoft 365','sharepoint','onedrive','teams','azure','aws','google workspace','corporate policy','acceptable use','data breach','incident report','compliance audit','vendor','contract','invoice','purchase order','nda'],
+    complianceRef: (code,label) => `<span class="comp-ref">🏢 ${code} · ${label}</span>`,
+    emailSamples: [
+      {key:'helpdesk',label:'IT Helpdesk Phish',icon:'⚠️ IT Spoof',
+       sender:'helpdesk@microsoft-support-portal.tk',replyTo:'',
+       subject:'URGENT: Your Microsoft 365 Account Will Be Disabled in 24 Hours',
+       body:'Your Microsoft 365 account has been flagged for a security violation.\n\nYour account will be permanently disabled unless you verify your identity immediately.\n\nVerify now: http://microsoft365-verify.ml/login\n\nYou must complete MFA re-enrollment and confirm your Active Directory credentials.\n\nIT Helpdesk Support Team'},
+      {key:'docusign',label:'DocuSign Phishing',icon:'📄 DocuSign',
+       sender:'dse@docusign-notification.xyz',replyTo:'',
+       subject:'DocuSign: Contract Ready for Your Signature — Expires Today',
+       body:'You have received a document for electronic signature.\n\nDocument: Vendor Services Agreement — Q2 2026\nSender: Legal Department\nExpires: Today at 5:00 PM\n\nReview and sign: http://docusign-esign.tk/document?id=839472\n\nThis link expires in 4 hours.\n\nDocuSign Electronic Signature Service'},
+      {key:'ceo',label:'CEO Impersonation',icon:'💼 CEO Fraud',
+       sender:'ceo.martinez@gmail.com',replyTo:'exec@private-email.ga',
+       subject:'Confidential — Need Vendor Payment Processed Urgently',
+       body:'This is confidential. Do not forward.\n\nI am in negotiations with a new software vendor and need payment processed today before the board meeting. Finance has been notified.\n\nVendor: TechSolutions Ltd\nAmount: $87,500\nAccount: 9823-4471-2038\nRouting: 021000021\n\nProcess immediately. I will explain Monday.\n\nCEO Martinez'},
+      {key:'legit',label:'Legitimate IT Policy Update',icon:'✅ Safe',
+       sender:'it-security@yourcompany.com',replyTo:'',
+       subject:'Quarterly Security Awareness Reminder — Phishing Trends Q2 2026',
+       body:'Your quarterly security awareness update is ready.\n\nKey threats this quarter:\n- DocuSign phishing campaigns up 34%\n- CEO impersonation emails targeting finance teams\n- Fake IT helpdesk password reset requests\n\nComplete your training at: https://security.yourcompany.com\n\nNever share passwords or MFA codes via email.\n\nCorporate IT Security Team'}
+    ],
+    urlSamples: [
+      {key:'m1',label:'M365 Phishing',val:'http://microsoft365-verify.ml/login'},
+      {key:'m2',label:'DocuSign Spoof',val:'https://docusign-esign.tk/document?id=839472'},
+      {key:'m3',label:'Zoom Spoof',val:'https://zoom-meeting-join.xyz/verify'},
+      {key:'s1',label:'Legit Microsoft',val:'https://www.microsoft.com/en-us/security'}
+    ],
+    complianceFramework: {
+      title: 'ISO 27001 / SOC 2 / NIST CSF',
+      sections: [
+        {title:'ISO 27001 — Information Security Management',controls:[
+          {name:'A.6.1.1: Information security roles & responsibilities',status:'Monitoring',cls:'cs-monitor'},
+          {name:'A.7.2.2: Information security awareness & training',status:'HIGH RISK',cls:'cs-risk'},
+          {name:'A.12.6.1: Technical vulnerability management',status:'Active',cls:'cs-ok'},
+          {name:'A.16.1: Management of information security incidents',status:'HIGH RISK',cls:'cs-risk'}
+        ]},
+        {title:'SOC 2 — Trust Service Criteria',controls:[
+          {name:'CC6.1: Logical and physical access controls',status:'HIGH RISK',cls:'cs-risk'},
+          {name:'CC6.7: Restrict transmission of information',status:'Monitoring',cls:'cs-monitor'},
+          {name:'CC7.2: System monitoring for threats',status:'Active',cls:'cs-ok'}
+        ]},
+        {title:'NIST CSF 2.0 — Cybersecurity Framework',controls:[
+          {name:'ID.AM: Asset management',status:'Active',cls:'cs-ok'},
+          {name:'PR.AT: Awareness and training',status:'Monitoring',cls:'cs-monitor'},
+          {name:'DE.CM: Continuous monitoring',status:'Active',cls:'cs-ok'},
+          {name:'RS.RP: Incident response planning',status:'HIGH RISK',cls:'cs-risk'}
+        ]}
+      ]
+    },
+    threatLandscape: [
+      {threat:'IT helpdesk credential phishing',level:'HIGH',cls:'cs-risk'},
+      {threat:'CEO/executive impersonation BEC',level:'CRITICAL',cls:'cs-risk'},
+      {threat:'DocuSign / e-signature phishing',level:'HIGH',cls:'cs-risk'},
+      {threat:'Microsoft 365 / Azure credential theft',level:'CRITICAL',cls:'cs-risk'},
+      {threat:'Supply chain vendor impersonation',level:'HIGH',cls:'cs-risk'},
+      {threat:'Ransomware via macro-enabled documents',level:'CRITICAL',cls:'cs-risk'}
+    ]
+  }
+};
+
+// ═══════════════════════════════════════════════════
+//  UNIVERSAL PATTERNS
+// ═══════════════════════════════════════════════════
+const HIGH_RISK_TLDS = ['.tk','.ml','.ga','.cf','.gq','.pw','.top','.xyz','.online','.click','.ru','.cn','.su'];
+const URGENCY_PHRASES = ['act immediately','asap','24 hours','48 hours','expires today','action required','final notice','account will be closed','verify now','password expired','immediately','respond urgently','last chance','do not ignore','time sensitive'];
+const BEC_WORDS = ['wire transfer','ach payment','routing number','account number','process payment','do not discuss','confidential request','board meeting','executive','ceo','cfo','president','payroll','vendor payment','urgent payment'];
+const ATTACHMENT_RISKS = /\.exe|\.zip|\.js|\.vbs|\.docm|\.xlsm|\.ps1|\.bat|\.cmd|\.scr/i;
+const IP_PATTERN = /\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/;
+
+// ═══════════════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════════════
+let currentSector = 'healthcare';
+let eTotal=0,ePhish=0,eSusp=0,eSafe=0,eSector=0;
+let uTotal=0,uMalicious=0,uSuspicious=0,uSafe=0,uSector=0;
+let eHistory=[],uHistory=[];
+let sectorScans={healthcare:0,finance:0,government:0,education:0,enterprise:0};
+let threatLog=[];
+
+// ═══════════════════════════════════════════════════
+//  SECTOR SWITCHING
+// ═══════════════════════════════════════════════════
+function setSector(s) {
+  currentSector = s;
+  document.querySelectorAll('.sector-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector(`.s-${s}`).classList.add('active');
+  const sec = SECTORS[s];
+  document.getElementById('sector-badge').textContent = `${sec.icon} ${sec.name.toUpperCase()}`;
+  document.getElementById('sector-desc').textContent = sec.desc;
+  renderSamples();
+  renderURLSamples();
+  renderCompliancePanel();
+}
+
+// ═══════════════════════════════════════════════════
+//  RENDER SAMPLES
+// ═══════════════════════════════════════════════════
+function renderSamples() {
+  const sec = SECTORS[currentSector];
+  document.getElementById('sample-grid').innerHTML = sec.emailSamples.map(s =>
+    `<button class="sample-btn" onclick="loadSample('${s.key}')"><span class="sl">${s.icon}</span>${s.label}</button>`
+  ).join('');
+}
+function renderURLSamples() {
+  const sec = SECTORS[currentSector];
+  document.getElementById('url-sample-grid').innerHTML = sec.urlSamples.map(s =>
+    `<button class="sample-btn" onclick="loadURLSample('${s.key}')"><span class="sl">${s.val.substring(0,30)}...</span>${s.label}</button>`
+  ).join('');
+}
+function loadSample(key) {
+  const s = SECTORS[currentSector].emailSamples.find(x => x.key === key);
+  if(!s) return;
+  document.getElementById('e-sender').value = s.sender;
+  document.getElementById('e-replyto').value = s.replyTo;
+  document.getElementById('e-subject').value = s.subject;
+  document.getElementById('e-body').value = s.body;
+}
+function loadURLSample(key) {
+  const s = SECTORS[currentSector].urlSamples.find(x => x.key === key);
+  if(!s) return;
+  document.getElementById('u-url').value = s.val;
+  document.getElementById('u-context').value = 'email';
+}
+
+// ═══════════════════════════════════════════════════
+//  EMAIL ANALYSIS
+// ═══════════════════════════════════════════════════
+function analyzeEmail() {
+  const sender = document.getElementById('e-sender').value.trim();
+  const replyTo = document.getElementById('e-replyto').value.trim();
+  const subject = document.getElementById('e-subject').value.trim();
+  const body = document.getElementById('e-body').value.trim();
+  if(!sender && !subject && !body) { alert('Please enter at least a sender and email body.'); return; }
+
+  const sec = SECTORS[currentSector];
+  const findings = [];
+  let risk = 0;
+  let sectorHit = false;
+
+  const senderDomain = sender.includes('@') ? sender.split('@')[1]?.toLowerCase() : '';
+  const subLower = subject.toLowerCase();
+  const bodyLower = body.toLowerCase();
+
+  // 1. Sector-specific domain spoofing
+  if(senderDomain && sec.spoofDomains.some(p => p.test(senderDomain))) {
+    findings.push({type:'critical',icon:'🚨',text:`Domain spoofing: "${senderDomain}" impersonates a ${sec.name} sector platform (${sec.spoofNames.slice(0,3).join(', ')}...). Attackers use this to harvest credentials.`,ref:sec.complianceRef('Credential Phishing','Access Control')});
+    risk += 45; sectorHit = true;
+  }
+
+  // 2. High-risk TLD on sender
+  if(senderDomain) {
+    const tld = '.' + senderDomain.split('.').slice(-1)[0];
+    if(HIGH_RISK_TLDS.includes(tld)) {
+      findings.push({type:'critical',icon:'🌐',text:`High-risk TLD detected: Sender domain "${senderDomain}" uses ${tld} — a free/abused TLD overwhelmingly used in phishing campaigns. No legitimate ${sec.name} organization uses this.`,ref:sec.complianceRef('Phishing Indicator','Awareness Training')});
+      risk += 35;
+    }
+  }
+
+  // 3. Reply-To domain mismatch
+  if(replyTo && sender) {
+    const sd = sender.split('@')[1]?.toLowerCase();
+    const rd = replyTo.split('@')[1]?.toLowerCase();
+    if(sd && rd && sd !== rd) {
+      findings.push({type:'critical',icon:'↩️',text:`Reply-To mismatch: Sender is "${sd}" but replies route to "${rd}" — classic phishing technique to intercept responses containing credentials or sensitive data.`,ref:sec.complianceRef('Email Spoofing','Transmission Security')});
+      risk += 30;
+    }
+  }
+
+  // 4. Sector keywords
+  const secKeys = sec.sectorKeywords.filter(k => bodyLower.includes(k) || subLower.includes(k));
+  if(secKeys.length >= 2) {
+    findings.push({type:'critical',icon:'🎯',text:`${sec.name}-specific sensitive data references detected: "${secKeys.slice(0,4).join('", "')}" — this email targets ${sec.name.toLowerCase()} sector data. Verify sender via out-of-band contact before responding.`,ref:sec.complianceRef('Data Protection','Sensitive Data Handling')});
+    risk += 30; sectorHit = true;
+  } else if(secKeys.length === 1) {
+    findings.push({type:'warning',icon:'⚠️',text:`${sec.name} sector reference found: "${secKeys[0]}" — verify this email is from a trusted source before sharing any sensitive information.`});
+    risk += 12;
+  }
+
+  // 5. BEC / wire fraud
+  const becFound = BEC_WORDS.filter(k => bodyLower.includes(k));
+  if(becFound.length >= 2) {
+    findings.push({type:'critical',icon:'💼',text:`Business Email Compromise (BEC) pattern: "${becFound.slice(0,3).join('", "')}" — attackers impersonate executives to authorize fraudulent wire transfers or vendor payments. Average loss: $125,000+.`,ref:sec.complianceRef('BEC / Wire Fraud','Incident Response')});
+    risk += 35; sectorHit = true;
+  }
+
+  // 6. Urgency / social engineering
+  const urgFound = URGENCY_PHRASES.filter(k => bodyLower.includes(k) || subLower.includes(k));
+  if(urgFound.length >= 2) {
+    findings.push({type:'warning',icon:'⏰',text:`Multiple urgency pressure tactics: "${urgFound.slice(0,3).join('", "')}" — social engineering designed to bypass rational evaluation. Take time to verify any request before acting.`,ref:sec.complianceRef('Social Engineering','Security Awareness')});
+    risk += 20;
+  } else if(urgFound.length === 1) {
+    findings.push({type:'warning',icon:'⚠️',text:`Urgency language: "${urgFound[0]}" — a common social engineering tactic. Verify through official channels.`});
+    risk += 8;
+  }
+
+  // 7. Malicious attachments
+  if(ATTACHMENT_RISKS.test(body)) {
+    findings.push({type:'critical',icon:'☠️',text:`High-risk file type referenced — executable or macro-enabled files are the primary ransomware and malware delivery mechanism. Do not open any attached files.`,ref:sec.complianceRef('Malware Delivery','Ransomware Prevention')});
+    risk += 35;
+  }
+
+  // 8. Embedded URLs
+  const urls = body.match(/https?:\/\/[^\s<>"{}|\\^`\[\]]+/gi) || [];
+  urls.forEach(url => {
+    try {
+      const u = new URL(url);
+      const h = u.hostname.toLowerCase();
+      const tld = '.' + h.split('.').slice(-1)[0];
+      if(IP_PATTERN.test(h)) {
+        findings.push({type:'critical',icon:'🔗',text:`Link uses raw IP address: ${h} — no legitimate ${sec.name.toLowerCase()} service uses an IP as host. Strong malware/phishing indicator.`,ref:sec.complianceRef('Malicious URL','Transmission Security')});
+        risk += 40;
+      }
+      if(HIGH_RISK_TLDS.includes(tld)) {
+        findings.push({type:'critical',icon:'🔗',text:`Embedded link uses high-risk TLD (${tld}): ${h}`,ref:sec.complianceRef('Suspicious Link','URL Risk')});
+        risk += 30;
+      }
+      if(sec.spoofDomains.some(p => p.test(h))) {
+        findings.push({type:'critical',icon:'🔗',text:`URL impersonates a ${sec.name} sector platform: ${h} — clicking leads to a credential harvesting page.`,ref:sec.complianceRef('URL Spoofing','Credential Theft')});
+        risk += 40;
+      }
+    } catch(e){}
+  });
+  if(urls.length > 4) {
+    findings.push({type:'warning',icon:'⚠️',text:`Excessive URLs in email (${urls.length}) — legitimate ${sec.name.toLowerCase()} organizations rarely include this many links in a single email.`});
+    risk += 10;
+  }
+
+  // 9. Positive signals
+  if(senderDomain && sec.legitimateDomains.includes(senderDomain) && risk < 20) {
+    findings.push({type:'safe',icon:'✅',text:`Sender domain "${senderDomain}" is a recognized legitimate ${sec.name} sector domain.`});
+  }
+  if(findings.filter(f => f.type !== 'safe').length === 0 && risk < 15) {
+    findings.push({type:'safe',icon:'✅',text:`No phishing patterns or high-risk indicators detected for ${sec.name} sector. Email appears consistent with legitimate communication.`});
+  }
+
+  risk = Math.min(risk, 100);
+  let verdict, vclass, vicon;
+  if(risk >= 60){verdict='PHISHING / MALICIOUS';vclass='danger';vicon='🚨';ePhish++;}
+  else if(risk >= 25){verdict='SUSPICIOUS';vclass='warning';vicon='⚠️';eSusp++;}
+  else{verdict='LIKELY SAFE';vclass='safe';vicon='✅';eSafe++;}
+  eTotal++;
+  if(sectorHit) eSector++;
+  sectorScans[currentSector]++;
+
+  // Log threat indicators
+  findings.filter(f=>f.type==='critical').forEach(f => {
+    threatLog.unshift({text:f.text.substring(0,60)+'...', sector:sec.name, time:new Date().toLocaleTimeString()});
+  });
+  if(threatLog.length > 20) threatLog = threatLog.slice(0,20);
+
+  document.getElementById('e-total').textContent = eTotal;
+  document.getElementById('e-phish').textContent = ePhish;
+  document.getElementById('e-susp').textContent = eSusp;
+  document.getElementById('e-safe').textContent = eSafe;
+  document.getElementById('e-sector').textContent = eSector;
+
+  const fillClass = risk >= 60 ? 'fill-danger' : risk >= 25 ? 'fill-warn' : 'fill-safe';
+  const html = `
+    <div class="result-banner ${vclass}">
+      <div class="result-icon">${vicon}</div>
+      <div>
+        <div class="result-verdict">${verdict}</div>
+        <div class="result-score">Risk Score: ${risk}/100 · ${findings.length} finding${findings.length!==1?'s':''} · Sector: ${sec.name}</div>
+      </div>
+    </div>
+    <div class="score-bar"><div class="score-fill ${fillClass}" style="width:${risk}%"></div></div>
+    <div class="findings-title">Findings (${sec.compliance})</div>
+    ${findings.map(f=>`<div class="finding ${f.type}"><span class="finding-icon">${f.icon}</span><div><div class="finding-text">${f.text}</div>${f.ref?f.ref:''}</div></div>`).join('')}
+    <div class="tags">
+      ${risk>=60?'<span class="tag tag-red">Do Not Click Links</span><span class="tag tag-red">Do Not Open Attachments</span><span class="tag tag-red">Report to IT Security</span><span class="tag tag-red">Potential Compliance Incident</span>':''}
+      ${risk>=25&&risk<60?'<span class="tag tag-amber">Verify Sender via Phone</span><span class="tag tag-amber">Do Not Share Sensitive Data</span><span class="tag tag-amber">Escalate if Unsure</span>':''}
+      ${risk<25?'<span class="tag tag-teal">Safe to Proceed</span><span class="tag tag-teal">No Compliance Risk Detected</span>':''}
+    </div>`;
+  document.getElementById('e-results').innerHTML = html;
+
+  eHistory.unshift({from:sender||'Unknown',subject:subject||'(No subject)',verdict,vclass:risk>=60?'danger':risk>=25?'warn':'safe',score:risk,sector:sec.name});
+  if(eHistory.length > 8) eHistory = eHistory.slice(0,8);
+  renderEmailHistory();
+  updateDashboard();
+}
+
+function renderEmailHistory() {
+  if(!eHistory.length){document.getElementById('e-history').innerHTML='<div class="empty"><div class="empty-text">No emails analyzed yet</div></div>';return;}
+  document.getElementById('e-history').innerHTML = eHistory.map(h=>`
+    <div class="history-item">
+      <div class="history-verdict hv-${h.vclass}">${h.verdict.split('/')[0].trim()}</div>
+      <div class="history-info"><div class="history-main">${h.from}</div><div class="history-sub">${h.subject} · ${h.sector}</div></div>
+      <div class="history-score" style="color:${h.score>=60?'var(--red)':h.score>=25?'var(--amber)':'var(--accent)'}">${h.score}/100</div>
+    </div>`).join('');
+}
+
+// ═══════════════════════════════════════════════════
+//  URL ANALYSIS
+// ═══════════════════════════════════════════════════
+function analyzeURL() {
+  const raw = document.getElementById('u-url').value.trim();
+  const context = document.getElementById('u-context').value;
+  if(!raw){alert('Please enter a URL.');return;}
+  const url = raw.startsWith('http') ? raw : 'https://'+raw;
+  const sec = SECTORS[currentSector];
+  const checks = [];
+  let risk = 0;
+  let sectorHit = false;
+
+  let parsed = null;
+  try{parsed=new URL(url);}catch(e){
+    checks.push({label:'URL Format',val:'INVALID',cls:'cv-fail',note:'Malformed URL — often used to bypass security filters.'});
+    risk += 20;
+  }
+
+  if(parsed) {
+    const host = parsed.hostname.toLowerCase();
+    const tld = '.' + host.split('.').slice(-1)[0];
+    const path = parsed.pathname + parsed.search;
+
+    // Protocol
+    checks.push({label:'Protocol',val:parsed.protocol==='https:'?'HTTPS ✓':'HTTP ⚠',cls:parsed.protocol==='https:'?'cv-pass':'cv-warn',note:parsed.protocol!=='https:'?'No encryption — data including credentials is exposed in transit.':null});
+    if(parsed.protocol!=='https:') risk+=20;
+
+    // IP address
+    if(IP_PATTERN.test(host)){
+      checks.push({label:'Host Type',val:'RAW IP ✗',cls:'cv-fail',note:`Raw IP: ${host} — no legitimate ${sec.name} platform uses an IP address as its host. Strong phishing/malware indicator.`});
+      risk+=45;
+    } else {
+      checks.push({label:'Host Type',val:'DOMAIN ✓',cls:'cv-pass'});
+    }
+
+    // TLD
+    checks.push({label:'TLD Risk',val:HIGH_RISK_TLDS.includes(tld)?`HIGH (${tld})`:'LOW',cls:HIGH_RISK_TLDS.includes(tld)?'cv-fail':'cv-pass',note:HIGH_RISK_TLDS.includes(tld)?`The "${tld}" TLD is predominantly used by attackers. No legitimate ${sec.name} organization uses this.`:null});
+    if(HIGH_RISK_TLDS.includes(tld)) risk+=40;
+
+    // Sector spoofing
+    const isSpoof = sec.spoofDomains.some(p => p.test(host));
+    checks.push({label:'Sector Domain Spoof',val:isSpoof?'DETECTED ✗':'NONE ✓',cls:isSpoof?'cv-fail':'cv-pass',note:isSpoof?`"${host}" appears to impersonate a ${sec.name} sector platform. Likely a credential harvesting site.`:null});
+    if(isSpoof){risk+=45;sectorHit=true;}
+
+    // Legitimate domain
+    const isLegit = sec.legitimateDomains.some(d => host===d||host.endsWith('.'+d));
+    checks.push({label:'Known Safe Domain',val:isLegit?'VERIFIED ✓':'NOT VERIFIED',cls:isLegit?'cv-pass':'cv-na',note:!isLegit?'Domain not in verified safe list. Exercise caution.':null});
+    if(isLegit) risk = Math.max(0, risk-30);
+
+    // Suspicious path
+    if(/login|verify|confirm|update|secure|account|password|credential|reset|auth/i.test(path)&&!isLegit){
+      checks.push({label:'Path Keywords',val:'SUSPICIOUS',cls:'cv-warn',note:`Path contains credential-harvesting keywords: "${path.substring(0,60)}" — combined with an unverified domain, this is a phishing indicator.`});
+      risk+=15;
+    } else {
+      checks.push({label:'Path Keywords',val:'NORMAL ✓',cls:'cv-pass'});
+    }
+
+    // Subdomain depth
+    const subCount = host.split('.').length-2;
+    if(subCount>2){
+      checks.push({label:'Subdomain Depth',val:`HIGH (${subCount})`,cls:'cv-warn',note:'Excessive subdomains used to make malicious URLs look legitimate.'});
+      risk+=10;
+    } else {
+      checks.push({label:'Subdomain Depth',val:'NORMAL ✓',cls:'cv-pass'});
+    }
+
+    // URL length
+    if(url.length > 100){
+      checks.push({label:'URL Length',val:`LONG (${url.length} chars)`,cls:'cv-warn',note:'Unusually long URLs are often used to hide the true destination or contain obfuscated parameters.'});
+      risk+=5;
+    }
+  }
+
+  risk = Math.min(risk, 100);
+  let verdict, vclass, vicon;
+  if(risk>=60){verdict='MALICIOUS / HIGH RISK';vclass='danger';vicon='🚨';uMalicious++;}
+  else if(risk>=25){verdict='SUSPICIOUS';vclass='warning';vicon='⚠️';uSuspicious++;}
+  else{verdict='LIKELY SAFE';vclass='safe';vicon='✅';uSafe++;}
+  uTotal++;
+  if(sectorHit) uSector++;
+  sectorScans[currentSector]++;
+
+  document.getElementById('u-total').textContent=uTotal;
+  document.getElementById('u-malicious').textContent=uMalicious;
+  document.getElementById('u-suspicious').textContent=uSuspicious;
+  document.getElementById('u-safe').textContent=uSafe;
+  document.getElementById('u-sector').textContent=uSector;
+
+  const fillClass = risk>=60?'fill-danger':risk>=25?'fill-warn':'fill-safe';
+  const html = `
+    <div class="result-banner ${vclass}">
+      <div class="result-icon">${vicon}</div>
+      <div>
+        <div class="result-verdict">${verdict}</div>
+        <div class="result-score">Risk Score: ${risk}/100${context?' · Context: '+context:''} · Sector: ${SECTORS[currentSector].name}</div>
+      </div>
+    </div>
+    <div class="score-bar"><div class="score-fill ${fillClass}" style="width:${risk}%"></div></div>
+    <div class="url-result">
+      <div class="url-display">${raw}</div>
+      ${checks.map(c=>`<div class="check-row"><span class="check-label">${c.label}</span><span class="check-val ${c.cls}">${c.val}</span></div>${c.note?`<div style="font-size:0.71rem;color:var(--text2);padding:4px 0 6px;line-height:1.5;border-bottom:1px solid var(--border)">${c.note}</div>`:''}`).join('')}
+    </div>
+    <div class="tags">
+      ${risk>=60?'<span class="tag tag-red">Do Not Visit</span><span class="tag tag-red">Block in Firewall</span><span class="tag tag-red">Report to IT</span><span class="tag tag-red">Compliance Risk</span>':''}
+      ${risk>=25&&risk<60?'<span class="tag tag-amber">Verify Before Visiting</span><span class="tag tag-amber">Contact IT if Unsure</span>':''}
+      ${risk<25?'<span class="tag tag-teal">Safe to Visit</span><span class="tag tag-teal">No Compliance Risk Detected</span>':''}
+    </div>`;
+  document.getElementById('u-results').innerHTML = html;
+
+  uHistory.unshift({url:raw,verdict,vclass:risk>=60?'danger':risk>=25?'warn':'safe',score:risk,sector:SECTORS[currentSector].name});
+  if(uHistory.length>8) uHistory=uHistory.slice(0,8);
+  renderURLHistory();
+  updateDashboard();
+}
+
+function renderURLHistory() {
+  if(!uHistory.length){document.getElementById('u-history').innerHTML='<div class="empty"><div class="empty-text">No URLs checked yet</div></div>';return;}
+  document.getElementById('u-history').innerHTML = uHistory.map(h=>`
+    <div class="history-item">
+      <div class="history-verdict hv-${h.vclass}">${h.verdict.split('/')[0].trim()}</div>
+      <div class="history-info"><div class="history-main">${h.url}</div><div class="history-sub">URL scan · ${h.sector}</div></div>
+      <div class="history-score" style="color:${h.score>=60?'var(--red)':h.score>=25?'var(--amber)':'var(--accent)'}">${h.score}/100</div>
+    </div>`).join('');
+}
+
+// ═══════════════════════════════════════════════════
+//  COMPLIANCE PANEL
+// ═══════════════════════════════════════════════════
+function renderCompliancePanel() {
+  const sec = SECTORS[currentSector];
+  const fw = sec.complianceFramework;
+
+  document.getElementById('compliance-content').innerHTML = `
+    <div style="margin-bottom:12px">
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:0.82rem;color:var(--text);margin-bottom:4px">${sec.icon} ${sec.name} Sector</div>
+      <div style="font-size:0.75rem;color:var(--text2)">${fw.title}</div>
+    </div>
+    ${fw.sections.map(s=>`
+      <div class="comp-section">
+        <div class="comp-section-title">📋 ${s.title}</div>
+        ${s.controls.map(c=>`<div class="comp-control"><span>${c.name}</span><span class="comp-status ${c.cls}">${c.status}</span></div>`).join('')}
+      </div>`).join('')}
+    <div class="note-box">
+      <div class="note-title">📌 About This Framework</div>
+      PhishGuard Pro maps every detected threat to the relevant ${fw.title} control, helping ${sec.name.toLowerCase()} organizations document their security posture and demonstrate compliance during audits.
+    </div>`;
+
+  document.getElementById('threat-landscape').innerHTML = `
+    <div style="margin-bottom:12px;font-size:0.78rem;color:var(--text2)">Common attack vectors targeting <strong style="color:var(--text)">${sec.name}</strong> sector organizations:</div>
+    <div class="comp-section">
+      ${sec.threatLandscape.map(t=>`<div class="comp-control"><span>${t.threat}</span><span class="comp-status ${t.cls}">${t.level}</span></div>`).join('')}
+    </div>
+    <div class="note-box" style="margin-top:10px">
+      <div class="note-title">⚖️ Compliance Exposure</div>
+      <strong style="color:var(--text)">Active Framework:</strong> ${sec.compliance}<br>
+      <strong style="color:var(--text)">Sector:</strong> ${sec.name}<br>
+      <strong style="color:var(--text)">Detection Coverage:</strong> ${sec.sectorKeywords.length} sector-specific keywords · ${sec.spoofDomains.length} spoof patterns · ${HIGH_RISK_TLDS.length} high-risk TLDs
+    </div>`;
+}
+
+// ═══════════════════════════════════════════════════
+//  DASHBOARD
+// ═══════════════════════════════════════════════════
+function updateDashboard() {
+  const totalScans = eTotal + uTotal;
+  const totalMalicious = ePhish + uMalicious;
+  const totalSuspicious = eSusp + uSuspicious;
+  const totalClean = eSafe + uSafe;
+  const detectionRate = totalScans > 0 ? Math.round(((totalMalicious+totalSuspicious)/totalScans)*100) : 0;
+  const activeSectors = Object.values(sectorScans).filter(v=>v>0).length;
+
+  document.getElementById('d-total-scans').textContent = totalScans;
+  document.getElementById('d-total-malicious').textContent = totalMalicious;
+  document.getElementById('d-total-suspicious').textContent = totalSuspicious;
+  document.getElementById('d-total-clean').textContent = totalClean;
+  document.getElementById('d-detection-rate').textContent = detectionRate+'%';
+  document.getElementById('d-sectors-used').textContent = activeSectors;
+
+  // Sector breakdown
+  document.getElementById('dashboard-sectors').innerHTML = Object.entries(SECTORS).map(([key,s])=>`
+    <div class="sector-stat" style="margin-bottom:8px">
+      <div class="sector-stat-left">
+        <div class="sector-icon-big">${s.icon}</div>
+        <div>
+          <div class="sector-stat-name">${s.name}</div>
+          <div class="sector-stat-comp">${s.compliance}</div>
+        </div>
+      </div>
+      <div class="sector-stat-right">
+        <div class="sector-stat-count" style="color:${sectorScans[key]>0?'var(--accent)':'var(--text3)'}">${sectorScans[key]}</div>
+        <div class="sector-stat-label">scans</div>
+      </div>
+    </div>`).join('');
+
+  // Threat log
+  if(threatLog.length===0){
+    document.getElementById('dashboard-threats').innerHTML='<div class="empty"><div class="empty-text">No threats detected yet.<br>Run some scans to populate this view.</div></div>';
+  } else {
+    document.getElementById('dashboard-threats').innerHTML = threatLog.slice(0,8).map(t=>`
+      <div class="history-item">
+        <div class="history-verdict hv-danger">THREAT</div>
+        <div class="history-info"><div class="history-main">${t.text}</div><div class="history-sub">${t.sector} · ${t.time}</div></div>
+      </div>`).join('');
+  }
+}
+
+// ═══════════════════════════════════════════════════
+//  TABS
+// ═══════════════════════════════════════════════════
+function switchTab(tab) {
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',['email','url','compliance','dashboard'][i]===tab));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('panel-'+tab).classList.add('active');
+  if(tab==='dashboard') updateDashboard();
+  if(tab==='compliance') renderCompliancePanel();
+}
+
+// ═══════════════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════════════
+renderSamples();
+renderURLSamples();
+renderCompliancePanel();
+updateDashboard();
+</script>
+</body>
+</html>
