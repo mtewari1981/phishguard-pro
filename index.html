@@ -182,6 +182,27 @@ input::placeholder,textarea::placeholder{color:var(--text3)}
 
 .note-box{padding:12px;background:var(--blue-bg);border:1px solid var(--blue-border);border-radius:7px;margin-top:10px;font-size:0.78rem;color:var(--text2);line-height:1.7}
 .note-title{font-family:'IBM Plex Mono',monospace;font-size:0.7rem;color:var(--blue);margin-bottom:5px}
+
+/* LIVE THREAT INTELLIGENCE */
+.live-source{display:flex;align-items:flex-start;justify-content:space-between;padding:10px 12px;border-radius:7px;border:1px solid var(--border);margin-bottom:8px;background:var(--bg3);gap:12px}
+.live-source-name{font-family:'IBM Plex Mono',monospace;font-size:0.75rem;color:var(--text);margin-bottom:3px}
+.live-detail{font-size:0.68rem;color:var(--text3);line-height:1.5}
+.live-source-verdict{font-family:'IBM Plex Mono',monospace;font-size:0.66rem;padding:3px 9px;border-radius:3px;white-space:nowrap;flex-shrink:0;margin-top:2px}
+.ls-malicious{background:var(--red-bg);color:var(--red);border:1px solid var(--red-border)}
+.ls-suspicious{background:var(--amber-bg);color:var(--amber);border:1px solid var(--amber-border)}
+.ls-clean{background:var(--accent-bg);color:var(--accent);border:1px solid var(--accent-border)}
+.ls-none{background:var(--bg4);color:var(--text3);border:1px solid var(--border)}
+.live-loading{text-align:center;padding:24px;color:var(--text3);font-family:'IBM Plex Mono',monospace;font-size:0.75rem;letter-spacing:0.5px}
+
+/* API KEY CONFIG */
+.api-config{background:var(--bg4);border:1px solid var(--border);border-radius:8px;padding:10px 14px;margin-top:12px}
+.api-config-title{font-family:'IBM Plex Mono',monospace;font-size:0.7rem;color:var(--text2);cursor:pointer;display:flex;align-items:center;justify-content:space-between;user-select:none}
+.api-config-title:hover{color:var(--text)}
+.api-config-fields{display:none;margin-top:10px}
+.api-config-fields.open{display:block}
+.api-save-btn{display:inline-flex;align-items:center;gap:6px;padding:7px 16px;border-radius:6px;font-size:0.78rem;font-weight:600;cursor:pointer;border:none;font-family:'IBM Plex Sans',sans-serif;background:var(--accent);color:#0a0f1e;margin-top:10px;width:auto}
+.api-save-btn:hover{background:var(--accent-dim)}
+.api-note{font-size:0.66rem;color:var(--text3);margin-top:6px;line-height:1.5}
 </style>
 </head>
 <body>
@@ -298,6 +319,22 @@ input::placeholder,textarea::placeholder{color:var(--text3)}
         <option value="qrcode">Scanned QR code</option>
       </select>
       <button class="btn btn-primary" onclick="analyzeURL()">🔍 Analyze URL</button>
+
+      <div class="api-config">
+        <div class="api-config-title" onclick="toggleApiConfig()">
+          <span>⚙️ Live API Keys</span>
+          <span id="api-config-arrow">▼</span>
+        </div>
+        <div class="api-config-fields" id="api-config-fields">
+          <label>PhishTank App Key</label>
+          <input type="text" id="key-phishtank" class="api-key-input" placeholder="Paste your PhishTank app key">
+          <label>AbuseIPDB API Key</label>
+          <input type="text" id="key-abuseipdb" class="api-key-input" placeholder="Paste your AbuseIPDB API key">
+          <button class="api-save-btn" onclick="saveApiKeys()">💾 Save Keys</button>
+          <div class="api-note">Keys are stored in your browser only — never sent anywhere except the respective API.<br>Free keys: <a href="https://www.phishtank.com/api_register.php" target="_blank" style="color:var(--blue)">PhishTank ↗</a> · <a href="https://www.abuseipdb.com/register" target="_blank" style="color:var(--blue)">AbuseIPDB ↗</a> · URLScan.io needs no key.</div>
+        </div>
+      </div>
+
       <label style="margin-top:16px">URL Samples</label>
       <div class="sample-grid" id="url-sample-grid"></div>
     </div>
@@ -307,6 +344,11 @@ input::placeholder,textarea::placeholder{color:var(--text3)}
       <div id="u-results">
         <div class="empty"><div class="empty-icon">🔗</div><div class="empty-text">Enter a URL above<br>to check for threats</div></div>
       </div>
+    </div>
+
+    <div class="card full" id="live-intel-card" style="display:none">
+      <div class="card-title">🌐 Live Threat Intelligence</div>
+      <div id="live-intel-results"></div>
     </div>
 
     <div class="card full">
@@ -361,6 +403,134 @@ input::placeholder,textarea::placeholder{color:var(--text3)}
 </div>
 
 <script>
+// ═══════════════════════════════════════════════════
+//  LIVE API CONFIG (keys stored in localStorage)
+// ═══════════════════════════════════════════════════
+function getApiKey(name) { return localStorage.getItem('pgp_' + name) || ''; }
+
+function toggleApiConfig() {
+  const f = document.getElementById('api-config-fields');
+  const a = document.getElementById('api-config-arrow');
+  f.classList.toggle('open');
+  a.textContent = f.classList.contains('open') ? '▲' : '▼';
+}
+
+function saveApiKeys() {
+  const pt = document.getElementById('key-phishtank').value.trim();
+  const ai = document.getElementById('key-abuseipdb').value.trim();
+  if (pt) localStorage.setItem('pgp_phishtank', pt);
+  if (ai) localStorage.setItem('pgp_abuseipdb', ai);
+  const btn = document.querySelector('.api-save-btn');
+  btn.textContent = '✅ Saved!';
+  setTimeout(() => { btn.innerHTML = '💾 Save Keys'; toggleApiConfig(); }, 1200);
+}
+
+function loadSavedKeys() {
+  const pt = getApiKey('phishtank');
+  const ai = getApiKey('abuseipdb');
+  if (pt) document.getElementById('key-phishtank').value = pt;
+  if (ai) document.getElementById('key-abuseipdb').value = ai;
+}
+
+// ═══════════════════════════════════════════════════
+//  LIVE THREAT INTELLIGENCE
+// ═══════════════════════════════════════════════════
+async function checkLiveThreats(url) {
+  const results = [];
+  let parsed;
+  try { parsed = new URL(url); } catch(e) { return []; }
+  const domain = parsed.hostname;
+
+  // URLScan.io — no key needed, CORS supported
+  try {
+    const r = await fetch(`https://urlscan.io/api/v1/search/?q=page.domain:${encodeURIComponent(domain)}&size=3`);
+    if (r.ok) {
+      const data = await r.json();
+      if (data.results && data.results.length > 0) {
+        const latest = data.results[0];
+        const malicious = latest.verdicts?.overall?.malicious || false;
+        const score = latest.verdicts?.overall?.score || 0;
+        const scanLink = latest.result ? `<a href="${latest.result}" target="_blank" style="color:var(--blue)">View scan ↗</a>` : '';
+        results.push({
+          source: 'URLScan.io', icon: '🔭',
+          verdict: malicious ? 'MALICIOUS' : score > 50 ? 'SUSPICIOUS' : 'CLEAN',
+          cls: malicious ? 'ls-malicious' : score > 50 ? 'ls-suspicious' : 'ls-clean',
+          detail: `${data.total} scan(s) found for this domain · Score: ${score}/100 · ${scanLink}`
+        });
+      } else {
+        results.push({ source: 'URLScan.io', icon: '🔭', verdict: 'NO RECORDS', cls: 'ls-none', detail: 'No previous scans found for this domain' });
+      }
+    } else {
+      results.push({ source: 'URLScan.io', icon: '🔭', verdict: 'ERROR', cls: 'ls-none', detail: `API returned ${r.status}` });
+    }
+  } catch(e) {
+    results.push({ source: 'URLScan.io', icon: '🔭', verdict: 'UNAVAILABLE', cls: 'ls-none', detail: 'Could not reach URLScan.io' });
+  }
+
+  // PhishTank — requires free app key
+  const ptKey = getApiKey('phishtank');
+  if (ptKey) {
+    try {
+      const body = new URLSearchParams({ url, format: 'json', app_key: ptKey });
+      const r = await fetch('https://checkurl.phishtank.com/checkurl/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: body.toString()
+      });
+      if (r.ok) {
+        const data = await r.json();
+        const inDb = data.results?.in_database;
+        const valid = data.results?.valid;
+        const detailLink = data.results?.phish_detail_page ? ` · <a href="${data.results.phish_detail_page}" target="_blank" style="color:var(--blue)">Details ↗</a>` : '';
+        results.push({
+          source: 'PhishTank', icon: '🎣',
+          verdict: inDb && valid ? 'PHISHING' : inDb ? 'FLAGGED' : 'NOT IN DATABASE',
+          cls: inDb && valid ? 'ls-malicious' : inDb ? 'ls-suspicious' : 'ls-clean',
+          detail: inDb ? `Found in PhishTank database · Verified: ${valid ? 'Yes' : 'No'}${detailLink}` : 'URL not found in PhishTank phishing database'
+        });
+      } else {
+        results.push({ source: 'PhishTank', icon: '🎣', verdict: 'ERROR', cls: 'ls-none', detail: `API error ${r.status} — verify your app key is correct` });
+      }
+    } catch(e) {
+      results.push({ source: 'PhishTank', icon: '🎣', verdict: 'BLOCKED', cls: 'ls-none', detail: 'Browser CORS restriction — PhishTank API requires a server-side proxy for in-browser use' });
+    }
+  } else {
+    results.push({ source: 'PhishTank', icon: '🎣', verdict: 'KEY REQUIRED', cls: 'ls-none', detail: 'Add your free PhishTank app key via ⚙️ API Keys · <a href="https://www.phishtank.com/api_register.php" target="_blank" style="color:var(--blue)">Register free ↗</a>' });
+  }
+
+  // AbuseIPDB — checks raw IP addresses only
+  const aiKey = getApiKey('abuseipdb');
+  if (/^(\d{1,3}\.){3}\d{1,3}$/.test(domain)) {
+    if (aiKey) {
+      try {
+        const r = await fetch(`https://api.abuseipdb.com/api/v2/check?ipAddress=${encodeURIComponent(domain)}&maxAgeInDays=90`, {
+          headers: { 'Key': aiKey, 'Accept': 'application/json' }
+        });
+        if (r.ok) {
+          const data = await r.json();
+          const score = data.data?.abuseConfidenceScore || 0;
+          results.push({
+            source: 'AbuseIPDB', icon: '🛡️',
+            verdict: score >= 75 ? 'MALICIOUS' : score >= 25 ? 'SUSPICIOUS' : 'CLEAN',
+            cls: score >= 75 ? 'ls-malicious' : score >= 25 ? 'ls-suspicious' : 'ls-clean',
+            detail: `Abuse confidence: ${score}% · Reports: ${data.data?.totalReports ?? 0} · Country: ${data.data?.countryCode || '?'} · ISP: ${data.data?.isp || 'Unknown'}`
+          });
+        } else {
+          results.push({ source: 'AbuseIPDB', icon: '🛡️', verdict: 'ERROR', cls: 'ls-none', detail: `API error ${r.status} — check your API key` });
+        }
+      } catch(e) {
+        results.push({ source: 'AbuseIPDB', icon: '🛡️', verdict: 'BLOCKED', cls: 'ls-none', detail: 'Browser CORS restriction — AbuseIPDB API is designed for server-side use' });
+      }
+    } else {
+      results.push({ source: 'AbuseIPDB', icon: '🛡️', verdict: 'KEY REQUIRED', cls: 'ls-none', detail: 'Add your free AbuseIPDB key via ⚙️ API Keys · <a href="https://www.abuseipdb.com/register" target="_blank" style="color:var(--blue)">Register free ↗</a>' });
+    }
+  } else {
+    results.push({ source: 'AbuseIPDB', icon: '🛡️', verdict: 'N/A', cls: 'ls-none', detail: 'AbuseIPDB only checks raw IP addresses — not applicable for domain-based URLs' });
+  }
+
+  return results;
+}
+
 // ═══════════════════════════════════════════════════
 //  SECTOR DEFINITIONS
 // ═══════════════════════════════════════════════════
@@ -916,7 +1086,7 @@ function renderEmailHistory() {
 // ═══════════════════════════════════════════════════
 //  URL ANALYSIS
 // ═══════════════════════════════════════════════════
-function analyzeURL() {
+async function analyzeURL() {
   const raw = document.getElementById('u-url').value.trim();
   const context = document.getElementById('u-context').value;
   if(!raw){alert('Please enter a URL.');return;}
@@ -1022,6 +1192,21 @@ function analyzeURL() {
       ${risk<25?'<span class="tag tag-teal">Safe to Visit</span><span class="tag tag-teal">No Compliance Risk Detected</span>':''}
     </div>`;
   document.getElementById('u-results').innerHTML = html;
+
+  // Show live intel card with loading state, then populate async
+  const liveCard = document.getElementById('live-intel-card');
+  liveCard.style.display = '';
+  document.getElementById('live-intel-results').innerHTML = '<div class="live-loading">⏳ Querying live threat intelligence databases...</div>';
+  checkLiveThreats(url).then(liveResults => {
+    document.getElementById('live-intel-results').innerHTML = liveResults.map(r => `
+      <div class="live-source">
+        <div style="flex:1;min-width:0">
+          <div class="live-source-name">${r.icon} ${r.source}</div>
+          <div class="live-detail">${r.detail}</div>
+        </div>
+        <span class="live-source-verdict ${r.cls}">${r.verdict}</span>
+      </div>`).join('');
+  });
 
   uHistory.unshift({url:raw,verdict,vclass:risk>=60?'danger':risk>=25?'warn':'safe',score:risk,sector:SECTORS[currentSector].name});
   if(uHistory.length>8) uHistory=uHistory.slice(0,8);
@@ -1138,6 +1323,7 @@ renderSamples();
 renderURLSamples();
 renderCompliancePanel();
 updateDashboard();
+loadSavedKeys();
 </script>
 </body>
 </html>
