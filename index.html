@@ -19,7 +19,23 @@
   --green:#2ed573;--green-bg:rgba(46,213,115,0.08);--green-border:rgba(46,213,115,0.25);
   --text:#e8edf8;--text2:#8b98b8;--text3:#5a6580;
 }
-body{font-family:'IBM Plex Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.6}
+body.light-theme{
+  --bg:#f0f4f8;--bg2:#ffffff;--bg3:#e4ecf5;--bg4:#d6e2ef;
+  --border:#c0cfe4;--border2:#a0b4cc;
+  --accent:#008a70;--accent-dim:#007060;
+  --accent-bg:rgba(0,138,112,0.08);--accent-border:rgba(0,138,112,0.3);
+  --red:#c0392b;--red-bg:rgba(192,57,43,0.08);--red-border:rgba(192,57,43,0.3);
+  --amber:#c07800;--amber-bg:rgba(192,120,0,0.08);--amber-border:rgba(192,120,0,0.3);
+  --blue:#1a6fb5;--blue-bg:rgba(26,111,181,0.08);--blue-border:rgba(26,111,181,0.25);
+  --purple:#7d3cac;--purple-bg:rgba(125,60,172,0.08);--purple-border:rgba(125,60,172,0.25);
+  --green:#1e8449;--green-bg:rgba(30,132,73,0.08);--green-border:rgba(30,132,73,0.25);
+  --text:#1a2340;--text2:#4a5568;--text3:#8b98b8;
+}
+body{font-family:'IBM Plex Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.6;transition:background 0.25s,color 0.25s}
+
+/* THEME TOGGLE */
+.theme-toggle{font-family:'IBM Plex Mono',monospace;font-size:0.72rem;padding:5px 12px;border-radius:6px;border:1px solid var(--border2);background:var(--bg3);color:var(--text2);cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:6px}
+.theme-toggle:hover{border-color:var(--accent-border);color:var(--text)}
 
 /* HEADER */
 .header{background:var(--bg2);border-bottom:1px solid var(--border);padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
@@ -224,6 +240,7 @@ input::placeholder,textarea::placeholder{color:var(--text3)}
     <span class="hbadge">FERPA</span>
     <span class="hbadge">ISO 27001</span>
     <span class="hbadge">v3.0</span>
+    <button class="theme-toggle" onclick="toggleTheme()" id="theme-btn">☀️ Light</button>
   </div>
 </div>
 
@@ -430,6 +447,22 @@ function loadSavedKeys() {
   const ai = getApiKey('abuseipdb');
   if (pt) document.getElementById('key-phishtank').value = pt;
   if (ai) document.getElementById('key-abuseipdb').value = ai;
+}
+
+// ═══════════════════════════════════════════════════
+//  THEME TOGGLE
+// ═══════════════════════════════════════════════════
+function toggleTheme() {
+  const isLight = document.body.classList.toggle('light-theme');
+  document.getElementById('theme-btn').textContent = isLight ? '🌙 Dark' : '☀️ Light';
+  localStorage.setItem('pgp_theme', isLight ? 'light' : 'dark');
+}
+
+function loadSavedTheme() {
+  if (localStorage.getItem('pgp_theme') === 'light') {
+    document.body.classList.add('light-theme');
+    document.getElementById('theme-btn').textContent = '🌙 Dark';
+  }
 }
 
 // ═══════════════════════════════════════════════════
@@ -1324,6 +1357,7 @@ renderURLSamples();
 renderCompliancePanel();
 updateDashboard();
 loadSavedKeys();
+loadSavedTheme();
 </script>
 </body>
 </html>
