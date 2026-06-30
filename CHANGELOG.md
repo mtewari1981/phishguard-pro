@@ -112,3 +112,20 @@ file (~75KB) with no external dependencies beyond Google Fonts.
 - Does not parse raw MIME, DKIM, SPF, or DMARC email headers
 - Client-side only — no centralized logging or export
 - English-language detection only
+
+---
+
+## Roadmap — Planned Next-Level Additions
+
+Ideas for future development sessions, in rough priority order:
+
+| # | Feature | Description |
+|---|---------|-------------|
+| 1 | **VirusTotal API integration** | Live URL reputation lookups against 70+ antivirus engines |
+| 2 | **DKIM / SPF / DMARC analysis** | Parse raw email headers to verify sender authentication |
+| 3 | **Export scan results** | Download results as PDF or CSV for reporting and compliance evidence |
+| 4 | **Custom sector configuration** | Let users define their own domains, keywords, and spoof patterns |
+| 5 | **Dark mode refinements** | Polish the light/dark theme based on real-world usage feedback |
+| 6 | **Machine learning scoring** | Add a TensorFlow.js scoring layer on top of the rule-based engine |
+| 7 | **Additional sectors** | Legal, Insurance, Energy & Utilities |
+| 8 | **REST API mode** | Expose detection engine as an API for SIEM and SOC tool integration |
