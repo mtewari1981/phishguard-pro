@@ -4,6 +4,26 @@ All notable changes to PhishGuard Pro are documented here.
 
 ---
 
+## [2026-07-01] — AI Classification
+
+### Added — AI URL Classification (Claude / Anthropic)
+- New **🤖 AI Classification** source in the Live Threat Intelligence panel
+- After scanning any URL, sends the URL structure (protocol, host, TLD, path) to Claude Haiku 4.5 via the Anthropic API for AI-powered phishing/malicious risk classification
+- Returns a verdict of **MALICIOUS**, **SUSPICIOUS**, or **SAFE** with a one-sentence reason and confidence level (high / medium / low)
+- Requires a personal Anthropic API key — enter it in the **⚙️ Live API Keys** panel (stored in browser localStorage only, never logged or shared)
+- Shows **KEY REQUIRED** prompt with link to `console.anthropic.com` if no key is set
+
+### Added — Anthropic Key Field in API Config Panel
+- New **Anthropic API Key** input field added to the ⚙️ Live API Keys collapsible panel
+- Key is saved and restored from localStorage alongside existing PhishTank and AbuseIPDB keys
+
+### Commits
+| Commit | Branch | Description |
+|--------|--------|-------------|
+| `1aba2f8` | main | Add AI classification to URL threat intelligence |
+
+---
+
 ## [2026-06-30] — Live Intelligence & Theme
 
 ### Added — Live Threat Intelligence Panel
