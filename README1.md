@@ -34,7 +34,7 @@ An **, open-source, browser-based** cybersecurity platform for detecting phishin
 
 ## Overview
 
-PhishGuard Pro is a client-side threat detection platform that analyzes suspicious emails and URLs for phishing, social engineering, malware delivery, and sector-targeted attacks.
+PhishGuard Pro is a client-side threat detection platform that analyzes suspicious emails and URLs for phishing, social engineering, malware delivery, and sector-targeted attacks. It uses live AI analysis to detect if a URL or domain or IP is malicious.
 
 **Key principles:**
 - 🔒 **Privacy-first** — no data ever leaves the browser, no backend, no tracking
@@ -102,3 +102,32 @@ Analyze any URL before visiting:
 PhishGuard Pro uses a **rule-based pattern matching engine** written in vanilla JavaScript. All processing happens locally in the browser.
 
 ### Email Analysis Pipeline
+
+## Benefits
+Generic tools (VirusTotal, URLScan.io, PhishTank) give you:
+- A yes/no verdict on whether a URL/file is known-malicious
+- Based on crowdsourced or historical database lookups
+- No context about who is being targeted or why
+
+---
+PhishGuard Pro gives you:
+
+1. Sector-specific detection
+Generic tools don't know you work in Healthcare vs Finance vs Government. PhishGuard Pro switches its entire detection ruleset by sector — it knows EPIC/Cerner/MyChart spoof patterns for healthcare, Chase/PayPal/IRS spoofs for finance, login.gov/USAJobs/DoD spoofs for government. A raw IP hosting an .exe file means different things depending on your sector context.
+
+2. Compliance mapping
+Results tie directly to the frameworks your sector is regulated by — HIPAA §164.308/312, PCI-DSS v4 requirements, SOX sections, FISMA/NIST SP 800-53, FERPA, CMMC. A generic tool tells you "malicious." PhishGuard Pro tells you "this is a HIPAA Transmission Security violation."
+
+3. Email + URL in one tool
+Most tools do one or the other. PhishGuard Pro analyzes the full email (sender, reply-to, subject, body, embedded
+links) and the URL together — which is how r
+
+4. AI reasoning layer (new)
+The Claude classification doesn't just match known-bad signatures — it reasons about why a URL looks suspicious based
+on structure, which catches novel attacks no
+
+5. No account, no data sent
+Everything runs in your browser. Your emails and URLs aren't logged by a third party.
+
+---
+The gap it fills: It's purpose-built for secpliance teams in regulated industries whoneed more than "blocked/not blocked" — they need context, sector relevance, and an audit trail tied to their regulatory framework.
