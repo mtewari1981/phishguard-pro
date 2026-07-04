@@ -9,7 +9,7 @@
 ![Frameworks](https://img.shields.io/badge/compliance%20frameworks-13-purple?style=flat-square)
 ![No Dependencies](https://img.shields.io/badge/dependencies-none-lightgrey?style=flat-square)
 
-An **open-source, browser-based** cybersecurity platform for detecting phishing threats across Healthcare, Finance, Government, Education, and Enterprise — with real-time compliance mapping to 13 federal and international security frameworks.
+An **open-source, browser-based** educational and defensive cybersecurity platform for detecting phishing threats across Healthcare, Finance, Government, Education, and Enterprise — with real-time compliance mapping to 13 federal and international security frameworks. 
 
 🌐 **Live Site:** [https://mtewari1981.github.io/phishguard-pro/](https://mtewari1981.github.io/phishguard-pro/)
 
