@@ -34,6 +34,8 @@ An **open-source, browser-based** educational and defensive cybersecurity platfo
 
 PhishGuard Pro is a client-side threat detection platform that analyzes suspicious emails and URLs for phishing, social engineering, malware delivery, and sector-targeted attacks.
 
+PhishGuard Pro is designed not only to analyze phishing emails and suspicious URLs but also to improve cybersecurity awareness by helping users understand *why* a message or website appears malicious. By combining threat analysis with explanations aligned to recognized cybersecurity frameworks, the platform serves as both a practical defensive tool and a learning resource for organizations seeking to strengthen their cybersecurity posture.
+
 **Key principles:**
 - 🔒 **Privacy-first** — no data ever leaves your browser; no backend, no tracking, no accounts
 - ⚡ **Zero setup** — open `index.html` in any browser, or visit the live site, and it works instantly
