@@ -197,6 +197,79 @@ input::placeholder,textarea::placeholder{color:var(--text3)}
 .empty-text{font-size:0.82rem}
 
 .note-box{padding:12px;background:var(--blue-bg);border:1px solid var(--blue-border);border-radius:7px;margin-top:10px;font-size:0.78rem;color:var(--text2);line-height:1.7}
+
+/* ── GMAIL INTEGRATION ──────────────────────────────────────────────── */
+.gmail-privacy{background:var(--blue-bg);border:1px solid var(--blue-border);border-radius:8px;padding:14px 16px;margin-bottom:1.25rem;font-size:0.78rem;color:var(--text2);line-height:1.7}
+.gmail-privacy strong{color:var(--text)}
+.gmail-privacy-title{font-family:'IBM Plex Mono',monospace;font-size:0.72rem;color:var(--blue);margin-bottom:6px;display:flex;align-items:center;gap:6px}
+
+.gmail-auth-card{text-align:center;padding:2.5rem 1.5rem;background:var(--bg2);border:1px solid var(--border);border-radius:12px;margin-bottom:1.25rem}
+.gmail-auth-icon{font-size:2.8rem;margin-bottom:12px}
+.gmail-auth-title{font-family:'IBM Plex Mono',monospace;font-size:0.9rem;color:var(--text);margin-bottom:6px}
+.gmail-auth-sub{font-size:0.78rem;color:var(--text2);margin-bottom:20px;line-height:1.6}
+.btn-google{display:inline-flex;align-items:center;gap:10px;padding:11px 24px;border-radius:7px;font-size:0.88rem;font-weight:600;cursor:pointer;border:1px solid var(--border2);background:var(--bg3);color:var(--text);font-family:'IBM Plex Sans',sans-serif;transition:all 0.2s;text-decoration:none}
+.btn-google:hover{border-color:var(--accent-border);color:var(--accent);background:var(--accent-bg)}
+.btn-google svg{width:18px;height:18px;flex-shrink:0}
+
+.gmail-connected-bar{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--accent-bg);border:1px solid var(--accent-border);border-radius:8px;margin-bottom:1.25rem;flex-wrap:wrap;gap:10px}
+.gmail-connected-left{display:flex;align-items:center;gap:10px;font-size:0.8rem;color:var(--text)}
+.gmail-connected-left span{font-family:'IBM Plex Mono',monospace;font-size:0.72rem;color:var(--accent)}
+.btn-small{padding:6px 14px;border-radius:6px;font-size:0.75rem;font-weight:600;cursor:pointer;border:1px solid var(--border2);background:var(--bg3);color:var(--text2);font-family:'IBM Plex Sans',sans-serif;transition:all 0.2s}
+.btn-small:hover{border-color:var(--red-border);color:var(--red)}
+
+.gmail-table-wrap{overflow-x:auto;border-radius:8px;border:1px solid var(--border)}
+table.gmail-table{width:100%;border-collapse:collapse;font-size:0.78rem}
+.gmail-table th{font-family:'IBM Plex Mono',monospace;font-size:0.65rem;text-transform:uppercase;letter-spacing:0.5px;color:var(--text2);padding:10px 12px;background:var(--bg3);border-bottom:1px solid var(--border);text-align:left;white-space:nowrap}
+.gmail-table td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:middle}
+.gmail-table tr:last-child td{border-bottom:none}
+.gmail-table tr:hover td{background:var(--bg3)}
+.gmail-sender{font-weight:500;color:var(--text);white-space:nowrap;max-width:180px;overflow:hidden;text-overflow:ellipsis}
+.gmail-subject{color:var(--text2);max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gmail-date{font-family:'IBM Plex Mono',monospace;font-size:0.68rem;color:var(--text3);white-space:nowrap}
+.gmail-snippet{font-size:0.72rem;color:var(--text3);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+.risk-badge{font-family:'IBM Plex Mono',monospace;font-size:0.62rem;font-weight:600;padding:3px 8px;border-radius:3px;white-space:nowrap;display:inline-block}
+.risk-safe{background:var(--accent-bg);color:var(--accent);border:1px solid var(--accent-border)}
+.risk-suspicious{background:var(--amber-bg);color:var(--amber);border:1px solid var(--amber-border)}
+.risk-high{background:var(--red-bg);color:#ff8800;border:1px solid rgba(255,136,0,0.35)}
+.risk-danger{background:var(--red-bg);color:var(--red);border:1px solid var(--red-border)}
+.risk-none{background:var(--bg4);color:var(--text3);border:1px solid var(--border);font-weight:400}
+
+.btn-analyze{font-family:'IBM Plex Mono',monospace;font-size:0.68rem;padding:5px 11px;border-radius:5px;border:1px solid var(--border2);background:var(--bg3);color:var(--text2);cursor:pointer;transition:all 0.2s;white-space:nowrap}
+.btn-analyze:hover{border-color:var(--accent-border);color:var(--accent);background:var(--accent-bg)}
+.btn-analyze:disabled{opacity:0.5;cursor:not-allowed}
+
+.gmail-result-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:1.25rem;margin-top:1.25rem;display:none}
+.gmail-result-card.visible{display:block}
+
+.gmail-verdict-banner{border-radius:8px;padding:14px 16px;margin-bottom:1rem;display:flex;align-items:center;gap:14px}
+.gmail-verdict-banner.safe{background:var(--accent-bg);border:1px solid var(--accent-border)}
+.gmail-verdict-banner.warning{background:var(--amber-bg);border:1px solid var(--amber-border)}
+.gmail-verdict-banner.high{background:rgba(255,136,0,0.08);border:1px solid rgba(255,136,0,0.3)}
+.gmail-verdict-banner.danger{background:var(--red-bg);border:1px solid var(--red-border)}
+.gmail-verdict-icon{font-size:1.6rem;flex-shrink:0}
+.gmail-verdict-label{font-family:'IBM Plex Mono',monospace;font-size:1rem;font-weight:600}
+.gmail-verdict-banner.safe .gmail-verdict-label{color:var(--accent)}
+.gmail-verdict-banner.warning .gmail-verdict-label{color:var(--amber)}
+.gmail-verdict-banner.high .gmail-verdict-label{color:#ff8800}
+.gmail-verdict-banner.danger .gmail-verdict-label{color:var(--red)}
+.gmail-verdict-meta{font-size:0.72rem;color:var(--text2);margin-top:3px}
+
+.gmail-section-title{font-family:'IBM Plex Mono',monospace;font-size:0.7rem;color:var(--text2);text-transform:uppercase;letter-spacing:0.5px;margin:14px 0 8px}
+.gmail-url-item{font-family:'IBM Plex Mono',monospace;font-size:0.7rem;padding:5px 10px;background:var(--bg3);border:1px solid var(--border);border-radius:5px;margin-bottom:5px;word-break:break-all;color:var(--text2)}
+.gmail-action-box{padding:12px 14px;background:var(--bg3);border-radius:7px;border:1px solid var(--border);font-size:0.78rem;color:var(--text);line-height:1.6}
+.gmail-compliance-chip{display:inline-flex;align-items:center;font-family:'IBM Plex Mono',monospace;font-size:0.63rem;padding:3px 9px;border-radius:3px;background:var(--blue-bg);border:1px solid var(--blue-border);color:var(--blue);margin:3px 4px 3px 0}
+
+.btn-ai{display:inline-flex;align-items:center;gap:8px;padding:9px 20px;border-radius:7px;font-size:0.82rem;font-weight:600;cursor:pointer;border:1px solid var(--purple-border);background:var(--purple-bg);color:var(--purple);font-family:'IBM Plex Sans',sans-serif;transition:all 0.2s;margin-top:12px}
+.btn-ai:hover{background:var(--purple);color:#fff}
+.btn-ai:disabled{opacity:0.5;cursor:not-allowed}
+
+.ai-result-box{margin-top:12px;padding:12px 14px;background:var(--purple-bg);border:1px solid var(--purple-border);border-radius:8px;font-size:0.78rem;color:var(--text);line-height:1.7;display:none}
+.ai-result-box.visible{display:block}
+.ai-result-label{font-family:'IBM Plex Mono',monospace;font-size:0.68rem;color:var(--purple);margin-bottom:6px}
+
+.gmail-spinner{display:inline-block;width:14px;height:14px;border:2px solid var(--border2);border-top-color:var(--accent);border-radius:50%;animation:spin 0.7s linear infinite;vertical-align:middle;margin-right:6px}
+@keyframes spin{to{transform:rotate(360deg)}}
 .note-title{font-family:'IBM Plex Mono',monospace;font-size:0.7rem;color:var(--blue);margin-bottom:5px}
 
 /* LIVE THREAT INTELLIGENCE */
@@ -271,6 +344,7 @@ input::placeholder,textarea::placeholder{color:var(--text3)}
   <div class="tab" onclick="switchTab('url')">🔗 URL / Web Traffic Checker</div>
   <div class="tab" onclick="switchTab('compliance')">📋 Compliance Framework</div>
   <div class="tab" onclick="switchTab('dashboard')">📊 Dashboard</div>
+  <div class="tab" onclick="switchTab('gmail')" id="tab-gmail">📬 Gmail Integration</div>
 </div>
 
 <!-- ══════════════════ EMAIL PANEL ══════════════════ -->
@@ -396,6 +470,96 @@ input::placeholder,textarea::placeholder{color:var(--text3)}
       <div id="threat-landscape"></div>
     </div>
   </div>
+</div>
+</div>
+
+<!-- ══════════════════ GMAIL PANEL ══════════════════ -->
+<div class="panel" id="panel-gmail">
+<div class="container">
+
+  <!-- Privacy Notice -->
+  <div class="gmail-privacy">
+    <div class="gmail-privacy-title">🔒 Privacy &amp; Data Notice</div>
+    <strong>Read-only access only.</strong> PhishGuard Pro requests the minimum Gmail permission
+    (<code>gmail.readonly</code>) — it can read emails but <strong>cannot send, delete, or modify</strong> anything.
+    Email content is <strong>fetched on demand, analyzed in memory, and never stored</strong>.
+    Content is only sent to an AI service when you explicitly click the <em>"AI Analyze"</em> button.
+    Your OAuth tokens are stored in a secure server-side session and are never exposed to the browser.
+  </div>
+
+  <!-- Auth state: loading -->
+  <div id="gmail-state-loading" style="text-align:center;padding:2rem;color:var(--text3);font-family:'IBM Plex Mono',monospace;font-size:0.8rem">
+    <span class="gmail-spinner"></span> Checking connection…
+  </div>
+
+  <!-- Auth state: not connected -->
+  <div id="gmail-state-login" style="display:none">
+    <div class="gmail-auth-card">
+      <div class="gmail-auth-icon">📬</div>
+      <div class="gmail-auth-title">Connect Your Gmail Account</div>
+      <div class="gmail-auth-sub">
+        Securely connect Gmail to analyze your inbox for phishing threats.<br>
+        Uses Google OAuth 2.0 — PhishGuard Pro never sees your Google password.
+      </div>
+      <a href="/auth/google" class="btn-google">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+          <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+          <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+          <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+        </svg>
+        Connect Gmail with Google
+      </a>
+      <div style="margin-top:14px;font-size:0.72rem;color:var(--text3)">
+        Scope: <code>https://www.googleapis.com/auth/gmail.readonly</code>
+      </div>
+    </div>
+    <div class="note-box">
+      <div class="note-title">⚙️ Setup Required</div>
+      Gmail integration requires the PhishGuard Pro backend server to be running.<br>
+      Run <code>node server.js</code> and open <code>http://localhost:3000</code> — then connect Gmail here.
+    </div>
+  </div>
+
+  <!-- Auth state: connected -->
+  <div id="gmail-state-connected" style="display:none">
+
+    <div class="gmail-connected-bar">
+      <div class="gmail-connected-left">
+        <span>✅ CONNECTED</span>
+        <span id="gmail-user-email" style="color:var(--text);font-family:inherit;font-size:0.8rem"></span>
+      </div>
+      <button class="btn-small" onclick="gmailLogout()">Disconnect Gmail</button>
+    </div>
+
+    <!-- Email list -->
+    <div class="card" style="margin-bottom:1.25rem">
+      <div class="card-title" style="display:flex;justify-content:space-between;align-items:center">
+        <span>📥 Recent Gmail Messages</span>
+        <button class="btn-small" onclick="gmailLoadMessages()" id="gmail-refresh-btn">↻ Refresh</button>
+      </div>
+      <div id="gmail-messages-area">
+        <div class="empty"><span class="gmail-spinner"></span>&nbsp; Loading messages…</div>
+      </div>
+    </div>
+
+    <!-- Analysis result -->
+    <div class="gmail-result-card" id="gmail-result-card">
+      <div class="card-title">🔬 Email Analysis Result</div>
+      <div id="gmail-result-body"></div>
+    </div>
+
+  </div>
+
+  <!-- Error state -->
+  <div id="gmail-state-error" style="display:none">
+    <div class="empty">
+      <div class="empty-icon">⚠️</div>
+      <div class="empty-text" id="gmail-error-text">An error occurred.</div>
+      <button class="btn-small" style="margin-top:14px" onclick="initGmailTab()">Try Again</button>
+    </div>
+  </div>
+
 </div>
 </div>
 
@@ -1417,12 +1581,330 @@ function updateDashboard() {
 // ═══════════════════════════════════════════════════
 //  TABS
 // ═══════════════════════════════════════════════════
+const TAB_ORDER = ['email','url','compliance','dashboard','gmail'];
 function switchTab(tab) {
-  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',['email','url','compliance','dashboard'][i]===tab));
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',TAB_ORDER[i]===tab));
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
   document.getElementById('panel-'+tab).classList.add('active');
   if(tab==='dashboard') updateDashboard();
   if(tab==='compliance') renderCompliancePanel();
+  if(tab==='gmail') initGmailTab();
+}
+
+// ═══════════════════════════════════════════════════
+//  GMAIL INTEGRATION
+// ═══════════════════════════════════════════════════
+
+let gmailCurrentMessageId = null;
+let gmailAnalysisCache = {};   // messageId -> analysis result
+
+function gmailShowState(state) {
+  ['loading','login','connected','error'].forEach(s => {
+    const el = document.getElementById('gmail-state-'+s);
+    if(el) el.style.display = s===state ? '' : 'none';
+  });
+}
+
+function gmailShowError(msg) {
+  gmailShowState('error');
+  const el = document.getElementById('gmail-error-text');
+  if(el) el.textContent = msg;
+}
+
+async function initGmailTab() {
+  gmailShowState('loading');
+  // Check if server is running and user is authenticated
+  try {
+    const res = await fetch('/api/auth/status');
+    if(!res.ok) throw new Error('Server not running');
+    const data = await res.json();
+    if(data.loggedIn) {
+      document.getElementById('gmail-user-email').textContent = data.email || '';
+      gmailShowState('connected');
+      gmailLoadMessages();
+    } else {
+      gmailShowState('login');
+    }
+  } catch(e) {
+    gmailShowState('login');
+  }
+}
+
+async function gmailLogout() {
+  try { await fetch('/api/auth/logout', { method:'POST' }); } catch {}
+  gmailAnalysisCache = {};
+  gmailCurrentMessageId = null;
+  document.getElementById('gmail-result-card').classList.remove('visible');
+  gmailShowState('login');
+}
+
+async function gmailLoadMessages() {
+  const area = document.getElementById('gmail-messages-area');
+  area.innerHTML = '<div class="empty"><span class="gmail-spinner"></span>&nbsp; Loading messages…</div>';
+
+  try {
+    const res = await fetch('/api/gmail/messages');
+    if(res.status === 401) { gmailShowState('login'); return; }
+    if(!res.ok) throw new Error((await res.json()).error || 'Unknown error');
+
+    const { messages } = await res.json();
+    if(!messages || messages.length === 0) {
+      area.innerHTML = '<div class="empty"><div class="empty-icon">📭</div><div class="empty-text">No messages found in inbox.</div></div>';
+      return;
+    }
+
+    // Restore any cached analysis badges
+    messages.forEach(m => {
+      if(gmailAnalysisCache[m.id]) m.riskStatus = gmailAnalysisCache[m.id].analysis;
+    });
+
+    area.innerHTML = renderGmailTable(messages);
+  } catch(e) {
+    area.innerHTML = `<div class="empty"><div class="empty-text">Failed to load messages: ${escapeHtml(e.message)}</div></div>`;
+  }
+}
+
+function renderGmailTable(messages) {
+  return `
+  <div class="gmail-table-wrap">
+    <table class="gmail-table">
+      <thead>
+        <tr>
+          <th>Sender</th>
+          <th>Subject</th>
+          <th>Date</th>
+          <th>Snippet</th>
+          <th>Risk</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${messages.map(m => `
+        <tr id="gmail-row-${m.id}">
+          <td><div class="gmail-sender" title="${escapeHtml(m.from)}">${escapeHtml(shortenSender(m.from))}</div></td>
+          <td><div class="gmail-subject" title="${escapeHtml(m.subject)}">${escapeHtml(m.subject)}</div></td>
+          <td><div class="gmail-date">${escapeHtml(formatGmailDate(m.date))}</div></td>
+          <td><div class="gmail-snippet" title="${escapeHtml(m.snippet)}">${escapeHtml(m.snippet)}</div></td>
+          <td id="gmail-risk-${m.id}">${renderRiskBadge(m.riskStatus)}</td>
+          <td><button class="btn-analyze" onclick="gmailAnalyzeMessage('${escapeHtml(m.id)}',this)" id="gmail-btn-${m.id}">🔍 Analyze</button></td>
+        </tr>`).join('')}
+      </tbody>
+    </table>
+  </div>`;
+}
+
+function renderRiskBadge(analysis) {
+  if(!analysis) return '<span class="risk-badge risk-none">—</span>';
+  const map = {
+    'MALICIOUS': ['risk-danger','🚨 MALICIOUS'],
+    'HIGH RISK': ['risk-high','⛔ HIGH RISK'],
+    'SUSPICIOUS': ['risk-suspicious','⚠️ SUSPICIOUS'],
+    'SAFE': ['risk-safe','✅ SAFE']
+  };
+  const [cls, label] = map[analysis.verdict] || ['risk-none', analysis.verdict];
+  return `<span class="risk-badge ${cls}">${label}</span>`;
+}
+
+async function gmailAnalyzeMessage(messageId, btn) {
+  gmailCurrentMessageId = messageId;
+  btn.disabled = true;
+  btn.innerHTML = '<span class="gmail-spinner"></span>';
+
+  const resultCard = document.getElementById('gmail-result-card');
+  const resultBody = document.getElementById('gmail-result-body');
+  resultCard.classList.add('visible');
+  resultBody.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--text3);font-family:\'IBM Plex Mono\',monospace;font-size:0.8rem"><span class="gmail-spinner"></span>&nbsp; Analyzing email…</div>';
+  resultCard.scrollIntoView({ behavior:'smooth', block:'nearest' });
+
+  try {
+    const res = await fetch('/api/gmail/analyze', {
+      method: 'POST',
+      headers: { 'Content-Type':'application/json' },
+      body: JSON.stringify({ messageId })
+    });
+    if(res.status === 401) { gmailShowState('login'); return; }
+    if(!res.ok) throw new Error((await res.json()).error || 'Analysis failed');
+
+    const data = await res.json();
+    gmailAnalysisCache[messageId] = data;
+
+    // Update risk badge in table row
+    const riskCell = document.getElementById('gmail-risk-'+messageId);
+    if(riskCell) riskCell.innerHTML = renderRiskBadge(data.analysis);
+
+    renderGmailAnalysisResult(data, resultBody);
+  } catch(e) {
+    resultBody.innerHTML = `<div class="empty"><div class="empty-text">Analysis failed: ${escapeHtml(e.message)}</div></div>`;
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '🔍 Analyze';
+  }
+}
+
+function renderGmailAnalysisResult(data, container) {
+  const a = data.analysis;
+  const verdictMap = {
+    'MALICIOUS': ['danger','🚨'],
+    'HIGH RISK': ['high','⛔'],
+    'SUSPICIOUS': ['warning','⚠️'],
+    'SAFE': ['safe','✅']
+  };
+  const [vclass, vicon] = verdictMap[a.verdict] || ['safe','✅'];
+
+  const findingHtml = (a.findings || []).map(f => {
+    const cls = f.severity === 'critical' ? 'critical' : f.severity === 'warning' ? 'warning' : f.severity === 'safe' ? 'safe' : '';
+    const icon = f.severity === 'critical' ? '🚨' : f.severity === 'warning' ? '⚠️' : f.severity === 'info' ? 'ℹ️' : '✅';
+    return `<div class="finding ${cls}"><span class="finding-icon">${icon}</span><div class="finding-text"><strong>[${escapeHtml(f.category)}]</strong> ${escapeHtml(f.text)}</div></div>`;
+  }).join('');
+
+  const urlsHtml = (a.suspiciousUrls || []).length > 0
+    ? (a.suspiciousUrls.map(u => `<div class="gmail-url-item">${escapeHtml(u)}</div>`).join(''))
+    : '<div style="font-size:0.78rem;color:var(--text3)">No suspicious URLs detected.</div>';
+
+  const shortenedHtml = (a.shortenedUrls || []).length > 0
+    ? (a.shortenedUrls.map(u => `<div class="gmail-url-item" style="border-color:var(--amber-border)">${escapeHtml(u)}</div>`).join(''))
+    : '';
+
+  const compHtml = (a.complianceMapping || []).length > 0
+    ? (a.complianceMapping.map(c => `<span class="gmail-compliance-chip">${escapeHtml(c)}</span>`).join(''))
+    : '<span style="font-size:0.75rem;color:var(--text3)">No compliance flags triggered.</span>';
+
+  const fillClass = a.riskScore >= 70 ? 'fill-danger' : a.riskScore >= 45 ? 'fill-warn' : a.riskScore >= 20 ? 'fill-warn' : 'fill-safe';
+
+  container.innerHTML = `
+    <div class="gmail-verdict-banner ${vclass}">
+      <div class="gmail-verdict-icon">${vicon}</div>
+      <div>
+        <div class="gmail-verdict-label">${escapeHtml(a.verdict)}</div>
+        <div class="gmail-verdict-meta">Risk Score: ${a.riskScore}/100 · ${(a.findings||[]).length} finding${(a.findings||[]).length!==1?'s':''}</div>
+      </div>
+    </div>
+    <div class="score-bar"><div class="score-fill ${fillClass}" style="width:${a.riskScore}%"></div></div>
+
+    <div style="font-size:0.78rem;color:var(--text2);margin-bottom:10px;padding:8px 10px;background:var(--bg3);border-radius:6px;border:1px solid var(--border)">
+      <strong style="color:var(--text)">From:</strong> ${escapeHtml(data.from || '')}
+      ${data.replyTo ? `&nbsp;·&nbsp;<strong style="color:var(--text)">Reply-To:</strong> ${escapeHtml(data.replyTo)}` : ''}
+      &nbsp;·&nbsp;<strong style="color:var(--text)">Subject:</strong> ${escapeHtml(data.subject || '')}
+    </div>
+
+    <div class="findings-title">Findings (${(a.findings||[]).length})</div>
+    ${findingHtml}
+
+    <div class="gmail-section-title">Suspicious URLs</div>
+    ${urlsHtml}
+    ${shortenedHtml ? `<div class="gmail-section-title">Shortened URLs (destination hidden)</div>${shortenedHtml}` : ''}
+
+    <div class="gmail-section-title">Recommended Action</div>
+    <div class="gmail-action-box">${escapeHtml(a.recommendedAction || '')}</div>
+
+    <div class="gmail-section-title">Compliance Mapping</div>
+    <div>${compHtml}</div>
+
+    <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border)">
+      <button class="btn-ai" onclick="gmailAiAnalyze('${escapeHtml(data.messageId)}')" id="btn-ai-${escapeHtml(data.messageId)}">
+        🤖 AI Analyze
+      </button>
+      <div style="font-size:0.68rem;color:var(--text3);margin-top:6px">
+        AI analysis sends email metadata (not full content) to Anthropic Claude for a second opinion.
+        Only click if you consent to that data leaving your server.
+      </div>
+      <div class="ai-result-box" id="ai-result-${escapeHtml(data.messageId)}"></div>
+    </div>`;
+}
+
+async function gmailAiAnalyze(messageId) {
+  const btn = document.getElementById('btn-ai-'+messageId);
+  const box = document.getElementById('ai-result-'+messageId);
+  if(!btn || !box) return;
+
+  btn.disabled = true;
+  btn.innerHTML = '<span class="gmail-spinner"></span> Analyzing with AI…';
+  box.style.display = 'none';
+
+  try {
+    const res = await fetch('/api/gmail/ai-analyze', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ messageId })
+    });
+    const data = await res.json();
+
+    if(!res.ok) {
+      box.innerHTML = `<div class="ai-result-label">AI Analysis Error</div><div>${escapeHtml(data.error || 'Unknown error')}</div>`;
+      box.style.display = 'block';
+      box.classList.add('visible');
+      return;
+    }
+
+    const ai = data.aiAnalysis;
+    const conf = ai.confidence ? ` · Confidence: ${ai.confidence}` : '';
+    box.innerHTML = `
+      <div class="ai-result-label">🤖 AI Analysis Result (Claude) — Explicit User Action</div>
+      <div><strong>Verdict:</strong> ${escapeHtml(ai.verdict || '')}${conf} · Score: ${ai.riskScore ?? '—'}/100</div>
+      <div style="margin-top:6px"><strong>Summary:</strong> ${escapeHtml(ai.summary || '')}</div>
+      ${ai.indicators?.length ? `<div style="margin-top:6px"><strong>Indicators:</strong> ${ai.indicators.map(x=>`<em>${escapeHtml(x)}</em>`).join(', ')}</div>` : ''}
+      <div style="margin-top:6px"><strong>Action:</strong> ${escapeHtml(ai.recommendedAction || '')}</div>
+      ${ai.complianceNotes && ai.complianceNotes !== 'None' ? `<div style="margin-top:6px"><strong>Compliance:</strong> ${escapeHtml(ai.complianceNotes)}</div>` : ''}`;
+    box.style.display = 'block';
+    box.classList.add('visible');
+  } catch(e) {
+    box.innerHTML = `<div class="ai-result-label">AI Analysis Error</div><div>${escapeHtml(e.message)}</div>`;
+    box.style.display = 'block';
+    box.classList.add('visible');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '🤖 AI Analyze';
+  }
+}
+
+// ── Gmail utility helpers ──────────────────────────────────────────────────────
+
+function shortenSender(from) {
+  if(!from) return '';
+  const match = from.match(/^([^<]+)\s*</);
+  if(match) return match[1].trim();
+  return from.replace(/<[^>]+>/, '').trim();
+}
+
+function formatGmailDate(dateStr) {
+  if(!dateStr) return '';
+  try {
+    const d = new Date(dateStr);
+    const now = new Date();
+    const diffMs = now - d;
+    const diffDays = Math.floor(diffMs / 86400000);
+    if(diffDays === 0) return d.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+    if(diffDays < 7) return d.toLocaleDateString([], {weekday:'short'});
+    return d.toLocaleDateString([], {month:'short',day:'numeric'});
+  } catch { return dateStr.substring(0,16); }
+}
+
+function escapeHtml(str) {
+  if(!str) return '';
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── Handle redirect params from OAuth callback ─────────────────────────────────
+function handleGmailRedirectParams() {
+  const params = new URLSearchParams(window.location.search);
+  if(params.has('gmail')) {
+    switchTab('gmail');
+    history.replaceState({}, '', window.location.pathname);
+  } else if(params.has('gmail_error')) {
+    switchTab('gmail');
+    const err = params.get('gmail_error');
+    const errMessages = {
+      'access_denied': 'Google sign-in was cancelled.',
+      'auth_failed': 'Authentication failed. Please try again.',
+      'no_code': 'OAuth flow interrupted. Please try again.'
+    };
+    setTimeout(() => {
+      gmailShowState('login');
+      const sub = document.querySelector('#gmail-state-login .gmail-auth-sub');
+      if(sub) sub.innerHTML += `<br><span style="color:var(--red);font-size:0.75rem">⚠️ ${errMessages[err] || escapeHtml(err)}</span>`;
+    }, 500);
+    history.replaceState({}, '', window.location.pathname);
+  }
 }
 
 // ═══════════════════════════════════════════════════
@@ -1434,6 +1916,7 @@ renderCompliancePanel();
 updateDashboard();
 loadSavedKeys();
 loadSavedTheme();
+handleGmailRedirectParams();
 </script>
 </body>
 </html>

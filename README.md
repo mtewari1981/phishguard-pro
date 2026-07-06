@@ -2,12 +2,12 @@
 
 ### Multi-Sector Phishing Detection Platform
 
-![Version](https://img.shields.io/badge/version-3.0-blue?style=flat-square)
+![Version](https://img.shields.io/badge/version-3.1-blue?style=flat-square)
 ![License](https://img.shields.io/badge/license-MIT-green?style=flat-square)
 ![Status](https://img.shields.io/badge/status-active-brightgreen?style=flat-square)
 ![Sectors](https://img.shields.io/badge/sectors-5-orange?style=flat-square)
 ![Frameworks](https://img.shields.io/badge/compliance%20frameworks-13-purple?style=flat-square)
-![No Dependencies](https://img.shields.io/badge/dependencies-none-lightgrey?style=flat-square)
+![Gmail](https://img.shields.io/badge/Gmail-OAuth%202.0-red?style=flat-square&logo=gmail)
 
 An **open-source, browser-based** educational and defensive cybersecurity platform for detecting phishing threats across Healthcare, Finance, Government, Education, and Enterprise — with real-time compliance mapping to 13 federal and international security frameworks. 
 
@@ -23,6 +23,7 @@ An **open-source, browser-based** educational and defensive cybersecurity platfo
 - [Live Threat Intelligence](#live-threat-intelligence)
 - [How It Works](#how-it-works)
 - [Getting Started](#getting-started)
+- [Gmail Integration](#gmail-integration)
 - [Use Cases](#use-cases)
 - [Limitations](#limitations)
 - [Contributing](#contributing)
@@ -37,10 +38,11 @@ PhishGuard Pro is a client-side threat detection platform that analyzes suspicio
 PhishGuard Pro is designed not only to analyze phishing emails and suspicious URLs but also to improve cybersecurity awareness by helping users understand *why* a message or website appears malicious. By combining threat analysis with explanations aligned to recognized cybersecurity frameworks, the platform serves as both a practical defensive tool and a learning resource for organizations seeking to strengthen their cybersecurity posture.
 
 **Key principles:**
-- 🔒 **Privacy-first** — no data ever leaves your browser; no backend, no tracking, no accounts
+- 🔒 **Privacy-first** — core analysis runs entirely in your browser; no backend, no tracking, no accounts required
 - ⚡ **Zero setup** — open `index.html` in any browser, or visit the live site, and it works instantly
 - 🏛 **Compliance-aware** — every threat finding maps to a specific regulatory control
 - 🆓 **Free to use** — no registration required; optional API keys unlock live intelligence features
+- 📬 **Gmail Integration** *(optional)* — connect your inbox to analyze real emails without manual copy-paste; requires the Node.js backend server
 
 ---
 
@@ -136,13 +138,23 @@ PhishGuard Pro uses a **rule-based pattern matching engine** written in vanilla 
 ### Option 1 — Live site (no install)
 Visit **[mtewari1981.github.io/phishguard-pro](https://mtewari1981.github.io/phishguard-pro/)** directly in any browser.
 
-### Option 2 — Run locally
+### Option 2 — Run locally (standalone, no server needed)
 ```bash
 git clone https://github.com/mtewari1981/phishguard-pro.git
 cd phishguard-pro
 open index.html   # or double-click the file
 ```
-No build step, no `npm install`, no dependencies.
+No build step, no `npm install`, no dependencies. Email Analyzer, URL Checker, Compliance, and Dashboard tabs all work.
+
+### Option 3 — Run with Gmail Integration (requires Node.js)
+```bash
+git clone https://github.com/mtewari1981/phishguard-pro.git
+cd phishguard-pro
+npm install
+cp .env.example .env   # fill in your Google OAuth credentials
+node server.js
+```
+Then open `http://localhost:3000`. See the [Gmail Integration](#gmail-integration) section for setup details.
 
 ### Optional API Keys (for live threat intelligence)
 Enter keys in the **⚙️ Live API Keys** panel on the URL Checker tab:
@@ -152,6 +164,85 @@ Enter keys in the **⚙️ Live API Keys** panel on the URL Checker tab:
 | PhishTank App Key | [phishtank.com/api_register.php](https://www.phishtank.com/api_register.php) | Free |
 | AbuseIPDB API Key | [abuseipdb.com/register](https://www.abuseipdb.com/register) | Free |
 | Anthropic API Key | [console.anthropic.com](https://console.anthropic.com/) | Pay-per-use (fractions of a cent per scan) |
+
+---
+
+## Gmail Integration
+
+The core Email Analyzer requires manually pasting email fields — which works but adds friction. The **Gmail Integration** tab solves this by connecting directly to your inbox so you can analyze real emails in one click, using the same detection engine, with an optional AI second-opinion via Claude.
+
+Powered by a Node.js/Express backend with Google OAuth 2.0.
+
+### What Gmail access is used and why
+
+| Scope | What it allows | Why it's needed |
+|---|---|---|
+| `https://www.googleapis.com/auth/gmail.readonly` | Read emails and inbox metadata | Fetch message headers, body, and attachment names for analysis |
+| `https://www.googleapis.com/auth/userinfo.email` | Read your Google account email address | Display which account is connected |
+
+PhishGuard Pro requests **the minimum possible scopes**. It cannot send, delete, label, or modify any emails or settings.
+
+> **Note on test users:** While your Google OAuth app is in Testing mode, up to **100 email addresses** can connect. Add test users in Google Cloud Console under **OAuth consent screen → Test users**. To allow anyone to connect, publish the app and complete Google's verification process.
+
+### Privacy guarantees
+
+- Email content is **never stored** — fetched on demand, analyzed in memory, discarded
+- OAuth tokens are stored in a **server-side session only** — never in the browser or any file
+- Email content is **not sent to any AI** unless you explicitly click the "AI Analyze" button
+- The server runs locally on your machine; nothing leaves your network except OAuth and optional AI calls
+
+---
+
+### Step 1 — Create a Google Cloud OAuth app
+
+1. Go to [Google Cloud Console](https://console.cloud.google.com/) and create or select a project
+2. Navigate to **APIs & Services → Credentials → Create Credentials → OAuth 2.0 Client ID**
+3. Set Application type to **Web application**
+4. Add an Authorized Redirect URI: `http://localhost:3000/auth/google/callback`
+5. Copy your **Client ID** and **Client Secret**
+
+### Step 2 — Enable the Gmail API
+
+1. In Cloud Console, go to **APIs & Services → Library**
+2. Search for **Gmail API** and click **Enable**
+
+### Step 3 — Configure environment variables
+
+```bash
+cp .env.example .env
+```
+
+Edit `.env` and fill in your values:
+
+```env
+GOOGLE_CLIENT_ID=your_client_id.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=your_client_secret
+GOOGLE_REDIRECT_URI=http://localhost:3000/auth/google/callback
+SESSION_SECRET=some-long-random-string-change-this
+
+# Optional — enables the "AI Analyze" button
+ANTHROPIC_API_KEY=sk-ant-...
+```
+
+### Step 4 — Run locally
+
+```bash
+npm install
+node server.js
+```
+
+Then open `http://localhost:3000` in your browser and click the **Gmail Integration** tab.
+
+> **Note:** The existing standalone `index.html` still works without the server for the Email Analyzer, URL Checker, and Compliance tabs. The Gmail tab requires the server.
+
+### Risk score levels
+
+| Level | Score | Meaning |
+|---|---|---|
+| SAFE | 0–19 | No threats detected |
+| SUSPICIOUS | 20–44 | Some indicators — verify before acting |
+| HIGH RISK | 45–69 | Multiple strong indicators — do not click links |
+| MALICIOUS | 70–100 | Confirmed phishing or malware — report and delete |
 
 ---
 
@@ -179,10 +270,10 @@ Enter keys in the **⚙️ Live API Keys** panel on the URL Checker tab:
 Pull requests are welcome. To contribute:
 
 1. Fork the repo
-2. Make your changes in `index.html` (the entire platform is a single file)
+2. Make your changes — `index.html` for the frontend, `server.js` / `phish-engine.js` for the backend
 3. Open a pull request describing what you changed and why
 
-Please keep contributions focused — no build tools, frameworks, or external dependencies.
+Please keep contributions focused — no additional build tools or frontend frameworks.
 
 ---
 
