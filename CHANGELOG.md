@@ -4,6 +4,21 @@ All notable changes to PhishGuard Pro are documented here.
 
 ---
 
+## [2026-07-06] — Documentation Updates
+
+### Updated — README
+- Clarified API key model: each visitor brings their own PhishTank, AbuseIPDB, and Anthropic keys — stored in their own browser, never shared, no cost to the site owner
+- Added note directing users to `console.anthropic.com` to get an Anthropic key and set a monthly budget limit
+- Enhanced Gmail Integration section with stronger copy explaining the two-layer protection model (rule-based engine + Claude AI)
+
+### Commits
+| Commit | Branch | Description |
+|--------|--------|-------------|
+| `b0eff38` | main | Clarify API key model — each user brings their own keys |
+| `5a2fbe4` | main | Enhance README with stronger Gmail + AI section copy |
+
+---
+
 ## [2026-07-06] — Gmail Integration (v3.1)
 
 ### Added — Gmail Integration Tab
