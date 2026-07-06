@@ -99,6 +99,8 @@ The AI Classification feature uses **Claude Haiku** to reason about URL structur
 
 All API keys are stored in your browser's `localStorage` only and are never logged or shared.
 
+> **How API keys work for visitors:** Each user enters their own API keys — PhishTank, AbuseIPDB, and Anthropic. Keys are saved in their own browser and never sent to anyone else. This means every user brings their own credentials, so there are no shared costs and no risk of your keys being used by others. Anthropic keys are free to create at [console.anthropic.com](https://console.anthropic.com/) and cost fractions of a cent per scan — set a monthly budget limit to keep spend in check.
+
 ### 📋 Compliance Framework Tab
 - Dynamically renders the full compliance framework for the active sector
 - Maps each control to its relevant threat category with risk severity ratings
