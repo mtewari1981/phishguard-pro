@@ -169,7 +169,17 @@ Enter keys in the **⚙️ Live API Keys** panel on the URL Checker tab:
 
 ## Gmail Integration
 
-The core Email Analyzer requires manually pasting email fields — which works but adds friction. The **Gmail Integration** tab solves this by connecting directly to your inbox so you can analyze real emails in one click, using the same detection engine, with an optional AI second-opinion via Claude.
+> **This is where PhishGuard Pro gets serious.**
+
+Most phishing detection tools make you do the work — copy the sender, paste the body, manually extract the headers. PhishGuard Pro's **Gmail Integration** eliminates all of that. Connect your inbox once and analyze any real email for phishing threats in a single click.
+
+But the real game-changer is the **AI layer**. After the rule-based engine scores an email, you can hit **AI Analyze** to send it to **Claude** — Anthropic's state-of-the-art AI model — for a second-opinion verdict. Claude reasons about the email the way a seasoned security analyst would: examining sender patterns, social engineering language, URL structure, and urgency tactics that static rules can miss. It returns a verdict (`SAFE`, `SUSPICIOUS`, `HIGH_RISK`, or `MALICIOUS`), a confidence level, a plain-English explanation of exactly what looks wrong, and a recommended action.
+
+**Two layers of protection. Rule-based speed. AI-powered depth.**
+
+- The **phishing engine** catches known patterns — spoofed domains, Reply-To mismatches, BEC language, malicious attachments — in milliseconds
+- **Claude AI** catches what rules can't — novel phrasing, subtle social engineering, zero-day attack patterns not yet in any signature database
+- Together, they give you the kind of coverage that enterprise security teams pay thousands for — free, running on your own machine
 
 Powered by a Node.js/Express backend with Google OAuth 2.0.
 
