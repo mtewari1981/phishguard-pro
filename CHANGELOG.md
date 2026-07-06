@@ -4,6 +4,51 @@ All notable changes to PhishGuard Pro are documented here.
 
 ---
 
+## [2026-07-06] — Gmail Integration (v3.1)
+
+### Added — Gmail Integration Tab
+- New **📬 Gmail Integration** tab powered by a Node.js/Express backend with Google OAuth 2.0
+- Users connect their Gmail inbox and analyze real emails for phishing threats in one click — no manual copy-paste of sender, recipient, or body required
+- Fetches the 20 most recent inbox messages and displays them in a table (sender, subject, date, snippet)
+- **Analyze** button runs the same phishing detection engine used by the standalone Email Analyzer
+- Results include risk score, verdict, suspicious URLs, shortened URLs, findings, recommended action, and compliance mapping
+- **AI Analyze** button (optional) sends email metadata to Claude Haiku for a second-opinion verdict with confidence level and plain-English explanation
+- Gmail access is strictly read-only (`gmail.readonly`) — PhishGuard Pro cannot send, delete, label, or modify emails
+- Email content is never stored — fetched on demand, analyzed in memory, discarded
+- OAuth tokens stored in server-side session only, never in the browser or any file
+- Supports up to 100 test users while OAuth app is in Google Testing mode
+
+### Added — Node.js Backend (server.js)
+- Express server with session management (`express-session`)
+- Google OAuth 2.0 login/logout flow with redirect handling
+- `/api/auth/status` — check if user is authenticated
+- `/api/gmail/messages` — list recent inbox messages
+- `/api/gmail/analyze` — run phishing analysis on a specific message
+- `/api/gmail/ai-analyze` — optional Claude AI analysis on a specific message
+
+### Added — Phishing Engine Module (phish-engine.js)
+- Extracted core phishing detection logic into a standalone Node.js module
+- Used by `server.js` to analyze Gmail messages server-side with the same rule-based engine as the browser frontend
+
+### Added — Project Setup Files
+- `package.json` — Node.js dependencies (express, express-session, googleapis, dotenv)
+- `.env.example` — template for required environment variables (Google OAuth credentials, session secret, optional Anthropic API key)
+- `.gitignore` — excludes `node_modules/`, `.env`, and log files from version control
+
+### Updated — README
+- Added Gmail Integration as an optional fifth key principle
+- Added Option 3 (run with Gmail) to Getting Started
+- Updated OAuth scope table to include `userinfo.email`
+- Added test user limit note (100 users in Testing mode)
+- Updated Contributing section to reference `server.js` and `phish-engine.js`
+
+### Commits
+| Commit | Branch | Description |
+|--------|--------|-------------|
+| `1ae1ac2` | main | Add Gmail Integration and Node.js backend (v3.1) |
+
+---
+
 ## [2026-07-01] — AI Classification
 
 ### Added — AI URL Classification (Claude / Anthropic)
@@ -142,7 +187,8 @@ Ideas for future development sessions, in rough priority order:
 | # | Feature | Description |
 |---|---------|-------------|
 | 1 | **VirusTotal API integration** | Live URL reputation lookups against 70+ antivirus engines |
-| 2 | **DKIM / SPF / DMARC analysis** | Parse raw email headers to verify sender authentication |
+| 2 | **Gmail Integration** ✅ | Connect Gmail inbox for one-click email analysis — shipped 2026-07-06 |
+| 3 | **DKIM / SPF / DMARC analysis** | Parse raw email headers to verify sender authentication |
 | 3 | **Export scan results** | Download results as PDF or CSV for reporting and compliance evidence |
 | 4 | **Custom sector configuration** | Let users define their own domains, keywords, and spoof patterns |
 | 5 | **Dark mode refinements** | Polish the light/dark theme based on real-world usage feedback |
