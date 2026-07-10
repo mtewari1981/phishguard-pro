@@ -4,6 +4,14 @@ All notable changes to PhishGuard Pro are documented here.
 
 ---
 
+## [2026-07-09] — Email Form Clear Button
+
+### Added — Clear button on Email Phishing Analyzer
+- New **✕ Clear** button next to the Analyze Email button clears all four input fields (Sender, Reply-To, Subject, Body) and resets the results panel to its empty state
+- Does not affect Dashboard stats, scan history, compliance triggers, or any persisted localStorage state
+
+---
+
 ## [2026-07-09] — Dashboard Persistence & Dynamic Compliance (v3.2)
 
 ### Added — Dashboard localStorage Persistence

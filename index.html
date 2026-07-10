@@ -370,7 +370,10 @@ table.gmail-table{width:100%;border-collapse:collapse;font-size:0.78rem}
       <input type="text" id="e-subject" placeholder="Email subject line">
       <label>Email Body</label>
       <textarea id="e-body" placeholder="Paste the full email body here..."></textarea>
-      <button class="btn btn-primary" onclick="analyzeEmail()">🔍 Analyze Email</button>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-primary" style="flex:1" onclick="analyzeEmail()">🔍 Analyze Email</button>
+        <button class="btn" style="background:var(--bg4);border:1px solid var(--border2);color:var(--text2)" onclick="clearEmailForm()">✕ Clear</button>
+      </div>
       <label style="margin-top:16px">Sector Sample Scenarios</label>
       <div class="sample-grid" id="sample-grid"></div>
     </div>
@@ -1249,6 +1252,13 @@ function loadURLSample(key) {
   if(!s) return;
   document.getElementById('u-url').value = s.val;
   document.getElementById('u-context').value = 'email';
+}
+
+function clearEmailForm() {
+  ['e-sender','e-replyto','e-subject','e-body'].forEach(id => {
+    document.getElementById(id).value = '';
+  });
+  document.getElementById('e-results').innerHTML = '<div class="empty"><div class="empty-icon">📭</div><div class="empty-text">Submit an email above<br>to see threat analysis</div></div>';
 }
 
 // ═══════════════════════════════════════════════════
