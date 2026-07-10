@@ -808,6 +808,8 @@ async function checkLiveThreats(url) {
         } else {
           results.push({ source: 'VirusTotal', icon: '🦠', verdict: 'SCANNING', cls: 'ls-none', detail: `URL submitted — scan in progress, check back in ~60 seconds · ${vtLink}` });
         }
+      } else if (proxyRes.status === 404) {
+        results.push({ source: 'VirusTotal', icon: '🦠', verdict: 'SCANNING', cls: 'ls-none', detail: `Submitting to VirusTotal — restart the server and try again, or check manually · ${vtLink}` });
       } else {
         results.push({ source: 'VirusTotal', icon: '🦠', verdict: 'ERROR', cls: 'ls-none', detail: `API error ${proxyRes.status} — verify your VirusTotal API key` });
       }
