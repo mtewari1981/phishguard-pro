@@ -2,7 +2,7 @@
 
 ### Multi-Sector Phishing Detection Platform
 
-![Version](https://img.shields.io/badge/version-3.1-blue?style=flat-square)
+![Version](https://img.shields.io/badge/version-3.2-blue?style=flat-square)
 ![License](https://img.shields.io/badge/license-MIT-green?style=flat-square)
 ![Status](https://img.shields.io/badge/status-active-brightgreen?style=flat-square)
 ![Sectors](https://img.shields.io/badge/sectors-5-orange?style=flat-square)
@@ -105,11 +105,14 @@ All API keys are stored in your browser's `localStorage` only and are never logg
 - Dynamically renders the full compliance framework for the active sector
 - Maps each control to its relevant threat category with risk severity ratings
 - Displays the sector-specific threat landscape
+- Controls show a live **TRIGGERED** status (amber highlight) when your actual scan findings match the control's threat category — so you can see exactly which regulations a real phishing attempt would implicate
 
 ### 📊 Dashboard
 - Aggregate scan statistics across all 5 sectors
 - Per-sector scan activity and detection rate
-- Top threat indicators detected across all sessions
+- **Recent Scan Activity** — logs every scan (SAFE, SUSPICIOUS, PHISHING) with verdict badge, sector, risk score, and time
+- **Persists across page reloads** via `localStorage` — your scan history and statistics survive a browser refresh
+- **Clear History** button to reset all counters and history when needed
 
 ---
 

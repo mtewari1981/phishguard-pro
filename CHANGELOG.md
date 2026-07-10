@@ -4,6 +4,40 @@ All notable changes to PhishGuard Pro are documented here.
 
 ---
 
+## [2026-07-09] — Dashboard Persistence & Dynamic Compliance (v3.2)
+
+### Added — Dashboard localStorage Persistence
+- Dashboard state (scan counts, sector tallies, threat log, scan history) now survives page reloads via `localStorage`
+- `saveState()` serializes all counters and history after every scan; `loadState()` restores them on startup
+- State is keyed to `pgp_dashboard_state`; up to 50 email/URL history entries and 20 scan log entries are persisted
+- **Last saved timestamp** displayed on the Dashboard card so users know when state was last written
+- **🗑 Clear History** button wipes all persisted state and resets counters to zero (with confirmation prompt)
+
+### Added — Recent Scan Activity card
+- Dashboard card renamed from "Top Threat Indicators Detected" to **Recent Scan Activity**
+- Previously only showed CRITICAL findings — now logs every scan regardless of severity (SAFE, SUSPICIOUS, PHISHING)
+- Each entry shows scan type (email/URL), verdict badge, sender/URL truncated, sector, risk score, and time
+- `scanLog` (up to 20 entries) is persisted in localStorage alongside the rest of the dashboard state
+
+### Added — Dynamic Compliance Framework (Session Triggers)
+- Compliance controls in the **📋 Compliance Framework** tab now show a live **TRIGGERED** status (amber highlight) when scan findings from the current session match the control's threat category
+- Each sector maintains a `sessionTriggers` map keyed by threat type (`credential`, `awareness`, `transmission`, `bec`, `malware`, `incident`, `data`)
+- `recordTrigger(key)` is called during email and URL analysis to mark which controls are relevant to real findings
+- `renderCompliancePanel()` reads `sessionTriggers` to apply the `.cs-triggered` class and "TRIGGERED" label
+- Trigger mapping covers 14 Gmail finding categories (Suspicious Sender Domain, Reply-To Mismatch, BEC indicators, Credential Harvesting, High-Risk Attachments, etc.)
+- Session trigger state persists across reloads alongside the rest of the dashboard state
+
+### Fixed — Browser cache serving stale JavaScript
+- Added `Cache-Control: no-store` response header for all `.html` files in `server.js` static file middleware
+- Prevents browsers from caching old versions of `index.html` after deployments; ensures users always run the latest JavaScript
+
+### Commits
+| Commit | Branch | Description |
+|--------|--------|-------------|
+| *(this release)* | main | Dashboard persistence, dynamic compliance triggers, cache fix |
+
+---
+
 ## [2026-07-06] — Documentation Updates
 
 ### Updated — README

@@ -161,6 +161,7 @@ input::placeholder,textarea::placeholder{color:var(--text3)}
 .cs-risk{background:var(--red-bg);color:var(--red);border:1px solid var(--red-border)}
 .cs-ok{background:var(--accent-bg);color:var(--accent);border:1px solid var(--accent-border)}
 .cs-monitor{background:var(--bg4);color:var(--text3);border:1px solid var(--border)}
+.cs-triggered{background:var(--amber-bg);color:var(--amber);border:1px solid var(--amber-border);font-weight:600}
 
 /* DASHBOARD */
 .sector-stat{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:14px;display:flex;align-items:center;justify-content:space-between}
@@ -566,13 +567,17 @@ table.gmail-table{width:100%;border-collapse:collapse;font-size:0.78rem}
 <!-- ══════════════════ DASHBOARD PANEL ══════════════════ -->
 <div class="panel" id="panel-dashboard">
 <div class="container">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:8px">
+    <div style="font-family:'IBM Plex Mono',monospace;font-size:0.72rem;color:var(--text3)" id="d-saved-at"></div>
+    <button class="btn-small" onclick="clearDashboard()" style="border-color:var(--red-border);color:var(--red)">🗑 Clear History</button>
+  </div>
   <div class="grid2">
     <div class="card">
       <div class="card-title">📊 All-Sector Scan Summary</div>
       <div id="dashboard-sectors"></div>
     </div>
     <div class="card">
-      <div class="card-title">🔥 Top Threat Indicators Detected</div>
+      <div class="card-title">📋 Recent Scan Activity</div>
       <div id="dashboard-threats"></div>
     </div>
     <div class="card full">
@@ -845,16 +850,16 @@ const SECTORS = {
       title: 'HIPAA Security Rule',
       sections: [
         {title:'Administrative Safeguards · §164.308',controls:[
-          {name:'Security Management Process (§164.308(a)(1))',status:'Monitoring',cls:'cs-monitor'},
-          {name:'Security Awareness Training (§164.308(a)(5))',status:'Phishing Defense',cls:'cs-monitor'},
-          {name:'Security Incident Procedures (§164.308(a)(6))',status:'Detection',cls:'cs-monitor'},
-          {name:'Contingency Plan — Ransomware (§164.308(a)(7))',status:'HIGH RISK',cls:'cs-risk'}
+          {name:'Security Management Process (§164.308(a)(1))',status:'Monitoring',cls:'cs-monitor',tk:'incident'},
+          {name:'Security Awareness Training (§164.308(a)(5))',status:'Phishing Defense',cls:'cs-monitor',tk:'awareness'},
+          {name:'Security Incident Procedures (§164.308(a)(6))',status:'Detection',cls:'cs-monitor',tk:'incident'},
+          {name:'Contingency Plan — Ransomware (§164.308(a)(7))',status:'HIGH RISK',cls:'cs-risk',tk:'malware'}
         ]},
         {title:'Technical Safeguards · §164.312',controls:[
-          {name:'Access Control — Credential Phishing (§164.312(a)(1))',status:'HIGH RISK',cls:'cs-risk'},
-          {name:'Audit Controls (§164.312(b))',status:'Active',cls:'cs-ok'},
-          {name:'Integrity — PHI Data (§164.312(c)(1))',status:'Monitoring',cls:'cs-monitor'},
-          {name:'Transmission Security (§164.312(e)(1))',status:'HIGH RISK',cls:'cs-risk'}
+          {name:'Access Control — Credential Phishing (§164.312(a)(1))',status:'HIGH RISK',cls:'cs-risk',tk:'credential'},
+          {name:'Audit Controls (§164.312(b))',status:'Active',cls:'cs-ok',tk:'incident'},
+          {name:'Integrity — PHI Data (§164.312(c)(1))',status:'Monitoring',cls:'cs-monitor',tk:'data'},
+          {name:'Transmission Security (§164.312(e)(1))',status:'HIGH RISK',cls:'cs-risk',tk:'transmission'}
         ]}
       ]
     },
@@ -905,19 +910,19 @@ const SECTORS = {
       title: 'PCI-DSS v4 / SOX / GLBA',
       sections: [
         {title:'PCI-DSS v4 — Cardholder Data Protection',controls:[
-          {name:'Req 5: Protect against malware / phishing',status:'HIGH RISK',cls:'cs-risk'},
-          {name:'Req 7: Restrict access to system components',status:'Monitoring',cls:'cs-monitor'},
-          {name:'Req 8: Identify users and authenticate access',status:'HIGH RISK',cls:'cs-risk'},
-          {name:'Req 12: Support info security with policies',status:'Active',cls:'cs-ok'}
+          {name:'Req 5: Protect against malware / phishing',status:'HIGH RISK',cls:'cs-risk',tk:'malware'},
+          {name:'Req 7: Restrict access to system components',status:'Monitoring',cls:'cs-monitor',tk:'credential'},
+          {name:'Req 8: Identify users and authenticate access',status:'HIGH RISK',cls:'cs-risk',tk:'credential'},
+          {name:'Req 12: Support info security with policies',status:'Active',cls:'cs-ok',tk:'incident'}
         ]},
         {title:'SOX — Sarbanes-Oxley Financial Controls',controls:[
-          {name:'Section 302: Corporate responsibility for reports',status:'BEC Risk',cls:'cs-risk'},
-          {name:'Section 404: Management assessment of controls',status:'Monitoring',cls:'cs-monitor'},
-          {name:'Section 802: Document destruction prevention',status:'Active',cls:'cs-ok'}
+          {name:'Section 302: Corporate responsibility for reports',status:'BEC Risk',cls:'cs-risk',tk:'bec'},
+          {name:'Section 404: Management assessment of controls',status:'Monitoring',cls:'cs-monitor',tk:'incident'},
+          {name:'Section 802: Document destruction prevention',status:'Active',cls:'cs-ok',tk:'data'}
         ]},
         {title:'GLBA — Gramm-Leach-Bliley Act',controls:[
-          {name:'Safeguards Rule: Protect customer information',status:'HIGH RISK',cls:'cs-risk'},
-          {name:'Privacy Rule: Customer data disclosure limits',status:'Monitoring',cls:'cs-monitor'}
+          {name:'Safeguards Rule: Protect customer information',status:'HIGH RISK',cls:'cs-risk',tk:'data'},
+          {name:'Privacy Rule: Customer data disclosure limits',status:'Monitoring',cls:'cs-monitor',tk:'data'}
         ]}
       ]
     },
@@ -968,21 +973,21 @@ const SECTORS = {
       title: 'FISMA / NIST SP 800-53 / CMMC',
       sections: [
         {title:'FISMA — Federal Information Security Management Act',controls:[
-          {name:'Risk Management Framework (RMF)',status:'Monitoring',cls:'cs-monitor'},
-          {name:'Continuous Monitoring (ConMon)',status:'Active',cls:'cs-ok'},
-          {name:'Incident Response Planning',status:'HIGH RISK',cls:'cs-risk'},
-          {name:'Security Authorization (ATO)',status:'Monitoring',cls:'cs-monitor'}
+          {name:'Risk Management Framework (RMF)',status:'Monitoring',cls:'cs-monitor',tk:'incident'},
+          {name:'Continuous Monitoring (ConMon)',status:'Active',cls:'cs-ok',tk:'awareness'},
+          {name:'Incident Response Planning',status:'HIGH RISK',cls:'cs-risk',tk:'incident'},
+          {name:'Security Authorization (ATO)',status:'Monitoring',cls:'cs-monitor',tk:'credential'}
         ]},
         {title:'NIST SP 800-53 — Security Controls',controls:[
-          {name:'AC-2: Account Management (credential phishing)',status:'HIGH RISK',cls:'cs-risk'},
-          {name:'AT-2: Security Awareness Training',status:'Monitoring',cls:'cs-monitor'},
-          {name:'IR-4: Incident Handling',status:'Active',cls:'cs-ok'},
-          {name:'SI-3: Malicious Code Protection',status:'HIGH RISK',cls:'cs-risk'}
+          {name:'AC-2: Account Management (credential phishing)',status:'HIGH RISK',cls:'cs-risk',tk:'credential'},
+          {name:'AT-2: Security Awareness Training',status:'Monitoring',cls:'cs-monitor',tk:'awareness'},
+          {name:'IR-4: Incident Handling',status:'Active',cls:'cs-ok',tk:'incident'},
+          {name:'SI-3: Malicious Code Protection',status:'HIGH RISK',cls:'cs-risk',tk:'malware'}
         ]},
         {title:'CMMC 2.0 — Cybersecurity Maturity Model',controls:[
-          {name:'AC.1.001: Limit system access to authorized users',status:'HIGH RISK',cls:'cs-risk'},
-          {name:'AT.2.056: Security awareness training',status:'Monitoring',cls:'cs-monitor'},
-          {name:'IR.2.092: Incident reporting and handling',status:'Active',cls:'cs-ok'}
+          {name:'AC.1.001: Limit system access to authorized users',status:'HIGH RISK',cls:'cs-risk',tk:'credential'},
+          {name:'AT.2.056: Security awareness training',status:'Monitoring',cls:'cs-monitor',tk:'awareness'},
+          {name:'IR.2.092: Incident reporting and handling',status:'Active',cls:'cs-ok',tk:'incident'}
         ]}
       ]
     },
@@ -1033,19 +1038,19 @@ const SECTORS = {
       title: 'FERPA / CIPA / COPPA',
       sections: [
         {title:'FERPA — Family Educational Rights and Privacy Act',controls:[
-          {name:'Student record access authorization',status:'HIGH RISK',cls:'cs-risk'},
-          {name:'Directory information disclosure limits',status:'Monitoring',cls:'cs-monitor'},
-          {name:'Third-party data sharing restrictions',status:'HIGH RISK',cls:'cs-risk'},
-          {name:'Parental/student consent requirements',status:'Active',cls:'cs-ok'}
+          {name:'Student record access authorization',status:'HIGH RISK',cls:'cs-risk',tk:'credential'},
+          {name:'Directory information disclosure limits',status:'Monitoring',cls:'cs-monitor',tk:'data'},
+          {name:'Third-party data sharing restrictions',status:'HIGH RISK',cls:'cs-risk',tk:'data'},
+          {name:'Parental/student consent requirements',status:'Active',cls:'cs-ok',tk:'data'}
         ]},
         {title:'CIPA — Children\'s Internet Protection Act',controls:[
-          {name:'Technology protection measures',status:'Monitoring',cls:'cs-monitor'},
-          {name:'Internet safety policy enforcement',status:'Active',cls:'cs-ok'},
-          {name:'Minor safety in online activities',status:'HIGH RISK',cls:'cs-risk'}
+          {name:'Technology protection measures',status:'Monitoring',cls:'cs-monitor',tk:'malware'},
+          {name:'Internet safety policy enforcement',status:'Active',cls:'cs-ok',tk:'awareness'},
+          {name:'Minor safety in online activities',status:'HIGH RISK',cls:'cs-risk',tk:'awareness'}
         ]},
         {title:'COPPA — Children\'s Online Privacy Protection',controls:[
-          {name:'Parental consent for under-13 data collection',status:'HIGH RISK',cls:'cs-risk'},
-          {name:'Limitation on data collection from minors',status:'Monitoring',cls:'cs-monitor'}
+          {name:'Parental consent for under-13 data collection',status:'HIGH RISK',cls:'cs-risk',tk:'data'},
+          {name:'Limitation on data collection from minors',status:'Monitoring',cls:'cs-monitor',tk:'data'}
         ]}
       ]
     },
@@ -1096,21 +1101,21 @@ const SECTORS = {
       title: 'ISO 27001 / SOC 2 / NIST CSF',
       sections: [
         {title:'ISO 27001 — Information Security Management',controls:[
-          {name:'A.6.1.1: Information security roles & responsibilities',status:'Monitoring',cls:'cs-monitor'},
-          {name:'A.7.2.2: Information security awareness & training',status:'HIGH RISK',cls:'cs-risk'},
-          {name:'A.12.6.1: Technical vulnerability management',status:'Active',cls:'cs-ok'},
-          {name:'A.16.1: Management of information security incidents',status:'HIGH RISK',cls:'cs-risk'}
+          {name:'A.6.1.1: Information security roles & responsibilities',status:'Monitoring',cls:'cs-monitor',tk:'incident'},
+          {name:'A.7.2.2: Information security awareness & training',status:'HIGH RISK',cls:'cs-risk',tk:'awareness'},
+          {name:'A.12.6.1: Technical vulnerability management',status:'Active',cls:'cs-ok',tk:'malware'},
+          {name:'A.16.1: Management of information security incidents',status:'HIGH RISK',cls:'cs-risk',tk:'incident'}
         ]},
         {title:'SOC 2 — Trust Service Criteria',controls:[
-          {name:'CC6.1: Logical and physical access controls',status:'HIGH RISK',cls:'cs-risk'},
-          {name:'CC6.7: Restrict transmission of information',status:'Monitoring',cls:'cs-monitor'},
-          {name:'CC7.2: System monitoring for threats',status:'Active',cls:'cs-ok'}
+          {name:'CC6.1: Logical and physical access controls',status:'HIGH RISK',cls:'cs-risk',tk:'credential'},
+          {name:'CC6.7: Restrict transmission of information',status:'Monitoring',cls:'cs-monitor',tk:'transmission'},
+          {name:'CC7.2: System monitoring for threats',status:'Active',cls:'cs-ok',tk:'incident'}
         ]},
         {title:'NIST CSF 2.0 — Cybersecurity Framework',controls:[
-          {name:'ID.AM: Asset management',status:'Active',cls:'cs-ok'},
-          {name:'PR.AT: Awareness and training',status:'Monitoring',cls:'cs-monitor'},
-          {name:'DE.CM: Continuous monitoring',status:'Active',cls:'cs-ok'},
-          {name:'RS.RP: Incident response planning',status:'HIGH RISK',cls:'cs-risk'}
+          {name:'ID.AM: Asset management',status:'Active',cls:'cs-ok',tk:'incident'},
+          {name:'PR.AT: Awareness and training',status:'Monitoring',cls:'cs-monitor',tk:'awareness'},
+          {name:'DE.CM: Continuous monitoring',status:'Active',cls:'cs-ok',tk:'incident'},
+          {name:'RS.RP: Incident response planning',status:'HIGH RISK',cls:'cs-risk',tk:'incident'}
         ]}
       ]
     },
@@ -1143,6 +1148,63 @@ let uTotal=0,uMalicious=0,uSuspicious=0,uSafe=0,uSector=0;
 let eHistory=[],uHistory=[];
 let sectorScans={healthcare:0,finance:0,government:0,education:0,enterprise:0};
 let threatLog=[];
+let sessionTriggers={healthcare:{},finance:{},government:{},education:{},enterprise:{}};
+let scanLog=[];
+
+const PGP_STATE_KEY = 'pgp_dashboard_state';
+
+function saveState() {
+  try {
+    localStorage.setItem(PGP_STATE_KEY, JSON.stringify({
+      eTotal,ePhish,eSusp,eSafe,eSector,
+      uTotal,uMalicious,uSuspicious,uSafe,uSector,
+      eHistory:eHistory.slice(0,50),
+      uHistory:uHistory.slice(0,50),
+      sectorScans,
+      threatLog:threatLog.slice(0,50),
+      scanLog:scanLog.slice(0,50),
+      sessionTriggers,
+      savedAt: Date.now()
+    }));
+  } catch(e){ console.warn('State save failed:', e); }
+}
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(PGP_STATE_KEY);
+    if(!raw) return;
+    const s = JSON.parse(raw);
+    eTotal=s.eTotal||0; ePhish=s.ePhish||0; eSusp=s.eSusp||0; eSafe=s.eSafe||0; eSector=s.eSector||0;
+    uTotal=s.uTotal||0; uMalicious=s.uMalicious||0; uSuspicious=s.uSuspicious||0; uSafe=s.uSafe||0; uSector=s.uSector||0;
+    eHistory=s.eHistory||[];
+    uHistory=s.uHistory||[];
+    sectorScans=s.sectorScans||{healthcare:0,finance:0,government:0,education:0,enterprise:0};
+    threatLog=s.threatLog||[];
+    scanLog=s.scanLog||[];
+    sessionTriggers=s.sessionTriggers||{healthcare:{},finance:{},government:{},education:{},enterprise:{}};
+  } catch(e){ console.warn('State load failed:', e); }
+}
+
+function clearDashboard() {
+  if(!confirm('Clear all scan history? This cannot be undone.')) return;
+  eTotal=0;ePhish=0;eSusp=0;eSafe=0;eSector=0;
+  uTotal=0;uMalicious=0;uSuspicious=0;uSafe=0;uSector=0;
+  eHistory=[];uHistory=[];
+  sectorScans={healthcare:0,finance:0,government:0,education:0,enterprise:0};
+  threatLog=[];
+  scanLog=[];
+  sessionTriggers={healthcare:{},finance:{},government:{},education:{},enterprise:{}};
+  localStorage.removeItem(PGP_STATE_KEY);
+  updateDashboard();
+  renderEmailHistory();
+  renderURLHistory();
+  renderCompliancePanel();
+}
+
+function recordTrigger(key) {
+  const s = sessionTriggers[currentSector];
+  s[key] = (s[key] || 0) + 1;
+}
 
 // ═══════════════════════════════════════════════════
 //  SECTOR SWITCHING
@@ -1212,6 +1274,7 @@ function analyzeEmail() {
   if(senderDomain && sec.spoofDomains.some(p => p.test(senderDomain))) {
     findings.push({type:'critical',icon:'🚨',text:`Domain spoofing: "${senderDomain}" impersonates a ${sec.name} sector platform (${sec.spoofNames.slice(0,3).join(', ')}...). Attackers use this to harvest credentials.`,ref:sec.complianceRef('Credential Phishing','Access Control')});
     risk += 45; sectorHit = true;
+    recordTrigger('credential'); recordTrigger('incident');
   }
 
   // 2. High-risk TLD on sender
@@ -1220,6 +1283,7 @@ function analyzeEmail() {
     if(HIGH_RISK_TLDS.includes(tld)) {
       findings.push({type:'critical',icon:'🌐',text:`High-risk TLD detected: Sender domain "${senderDomain}" uses ${tld} — a free/abused TLD overwhelmingly used in phishing campaigns. No legitimate ${sec.name} organization uses this.`,ref:sec.complianceRef('Phishing Indicator','Awareness Training')});
       risk += 35;
+      recordTrigger('awareness');
     }
   }
 
@@ -1230,6 +1294,7 @@ function analyzeEmail() {
     if(sd && rd && sd !== rd) {
       findings.push({type:'critical',icon:'↩️',text:`Reply-To mismatch: Sender is "${sd}" but replies route to "${rd}" — classic phishing technique to intercept responses containing credentials or sensitive data.`,ref:sec.complianceRef('Email Spoofing','Transmission Security')});
       risk += 30;
+      recordTrigger('transmission'); recordTrigger('credential');
     }
   }
 
@@ -1238,6 +1303,7 @@ function analyzeEmail() {
   if(secKeys.length >= 2) {
     findings.push({type:'critical',icon:'🎯',text:`${sec.name}-specific sensitive data references detected: "${secKeys.slice(0,4).join('", "')}" — this email targets ${sec.name.toLowerCase()} sector data. Verify sender via out-of-band contact before responding.`,ref:sec.complianceRef('Data Protection','Sensitive Data Handling')});
     risk += 30; sectorHit = true;
+    recordTrigger('data');
   } else if(secKeys.length === 1) {
     findings.push({type:'warning',icon:'⚠️',text:`${sec.name} sector reference found: "${secKeys[0]}" — verify this email is from a trusted source before sharing any sensitive information.`});
     risk += 12;
@@ -1248,6 +1314,7 @@ function analyzeEmail() {
   if(becFound.length >= 2) {
     findings.push({type:'critical',icon:'💼',text:`Business Email Compromise (BEC) pattern: "${becFound.slice(0,3).join('", "')}" — attackers impersonate executives to authorize fraudulent wire transfers or vendor payments. Average loss: $125,000+.`,ref:sec.complianceRef('BEC / Wire Fraud','Incident Response')});
     risk += 35; sectorHit = true;
+    recordTrigger('bec'); recordTrigger('incident');
   }
 
   // 6. Urgency / social engineering
@@ -1255,6 +1322,7 @@ function analyzeEmail() {
   if(urgFound.length >= 2) {
     findings.push({type:'warning',icon:'⏰',text:`Multiple urgency pressure tactics: "${urgFound.slice(0,3).join('", "')}" — social engineering designed to bypass rational evaluation. Take time to verify any request before acting.`,ref:sec.complianceRef('Social Engineering','Security Awareness')});
     risk += 20;
+    recordTrigger('awareness');
   } else if(urgFound.length === 1) {
     findings.push({type:'warning',icon:'⚠️',text:`Urgency language: "${urgFound[0]}" — a common social engineering tactic. Verify through official channels.`});
     risk += 8;
@@ -1264,6 +1332,7 @@ function analyzeEmail() {
   if(ATTACHMENT_RISKS.test(body)) {
     findings.push({type:'critical',icon:'☠️',text:`High-risk file type referenced — executable or macro-enabled files are the primary ransomware and malware delivery mechanism. Do not open any attached files.`,ref:sec.complianceRef('Malware Delivery','Ransomware Prevention')});
     risk += 35;
+    recordTrigger('malware');
   }
 
   // 8. Embedded URLs
@@ -1276,14 +1345,17 @@ function analyzeEmail() {
       if(IP_PATTERN.test(h)) {
         findings.push({type:'critical',icon:'🔗',text:`Link uses raw IP address: ${h} — no legitimate ${sec.name.toLowerCase()} service uses an IP as host. Strong malware/phishing indicator.`,ref:sec.complianceRef('Malicious URL','Transmission Security')});
         risk += 40;
+        recordTrigger('transmission');
       }
       if(HIGH_RISK_TLDS.includes(tld)) {
         findings.push({type:'critical',icon:'🔗',text:`Embedded link uses high-risk TLD (${tld}): ${h}`,ref:sec.complianceRef('Suspicious Link','URL Risk')});
         risk += 30;
+        recordTrigger('transmission'); recordTrigger('awareness');
       }
       if(sec.spoofDomains.some(p => p.test(h))) {
         findings.push({type:'critical',icon:'🔗',text:`URL impersonates a ${sec.name} sector platform: ${h} — clicking leads to a credential harvesting page.`,ref:sec.complianceRef('URL Spoofing','Credential Theft')});
         risk += 40;
+        recordTrigger('credential');
       }
     } catch(e){}
   });
@@ -1309,11 +1381,35 @@ function analyzeEmail() {
   if(sectorHit) eSector++;
   sectorScans[currentSector]++;
 
-  // Log threat indicators
+  // Log threat indicators (critical findings only)
   findings.filter(f=>f.type==='critical').forEach(f => {
     threatLog.unshift({text:f.text.substring(0,60)+'...', sector:sec.name, time:new Date().toLocaleTimeString()});
   });
   if(threatLog.length > 20) threatLog = threatLog.slice(0,20);
+
+  // Log every scan result for dashboard activity feed
+  scanLog.unshift({type:'email', vclass:risk>=60?'danger':risk>=25?'warn':'safe', label:risk>=60?'PHISHING':risk>=25?'SUSPICIOUS':'SAFE', detail:(sender||'Unknown sender').substring(0,40), subject:(subject||'(No subject)').substring(0,35), sector:sec.name, score:risk, time:new Date().toLocaleTimeString()});
+  if(scanLog.length > 20) scanLog = scanLog.slice(0,20);
+
+  // Update dashboard counters directly — keeps them in sync even without a tab switch
+  const _dts = document.getElementById('d-total-scans');
+  const _dtm = document.getElementById('d-total-malicious');
+  const _dts2 = document.getElementById('d-total-suspicious');
+  const _dtc = document.getElementById('d-total-clean');
+  const _ddr = document.getElementById('d-detection-rate');
+  const _dsu = document.getElementById('d-sectors-used');
+  const _totalNow = eTotal + uTotal;
+  const _malNow = ePhish + uMalicious;
+  const _suspNow = eSusp + uSuspicious;
+  const _cleanNow = eSafe + uSafe;
+  const _rateNow = _totalNow > 0 ? Math.round(((_malNow + _suspNow) / _totalNow) * 100) : 0;
+  const _activeNow = Object.values(sectorScans).filter(v => v > 0).length;
+  if(_dts) _dts.textContent = _totalNow;
+  if(_dtm) _dtm.textContent = _malNow;
+  if(_dts2) _dts2.textContent = _suspNow;
+  if(_dtc) _dtc.textContent = _cleanNow;
+  if(_ddr) _ddr.textContent = _rateNow + '%';
+  if(_dsu) _dsu.textContent = _activeNow;
 
   document.getElementById('e-total').textContent = eTotal;
   document.getElementById('e-phish').textContent = ePhish;
@@ -1344,6 +1440,7 @@ function analyzeEmail() {
   if(eHistory.length > 8) eHistory = eHistory.slice(0,8);
   renderEmailHistory();
   updateDashboard();
+  saveState();
 }
 
 function renderEmailHistory() {
@@ -1382,24 +1479,24 @@ async function analyzeURL() {
 
     // Protocol
     checks.push({label:'Protocol',val:parsed.protocol==='https:'?'HTTPS ✓':'HTTP ⚠',cls:parsed.protocol==='https:'?'cv-pass':'cv-warn',note:parsed.protocol!=='https:'?'No encryption — data including credentials is exposed in transit.':null});
-    if(parsed.protocol!=='https:') risk+=20;
+    if(parsed.protocol!=='https:'){ risk+=20; recordTrigger('transmission'); }
 
     // IP address
     if(IP_PATTERN.test(host)){
       checks.push({label:'Host Type',val:'RAW IP ✗',cls:'cv-fail',note:`Raw IP: ${host} — no legitimate ${sec.name} platform uses an IP address as its host. Strong phishing/malware indicator.`});
-      risk+=45;
+      risk+=45; recordTrigger('transmission');
     } else {
       checks.push({label:'Host Type',val:'DOMAIN ✓',cls:'cv-pass'});
     }
 
     // TLD
     checks.push({label:'TLD Risk',val:HIGH_RISK_TLDS.includes(tld)?`HIGH (${tld})`:'LOW',cls:HIGH_RISK_TLDS.includes(tld)?'cv-fail':'cv-pass',note:HIGH_RISK_TLDS.includes(tld)?`The "${tld}" TLD is predominantly used by attackers. No legitimate ${sec.name} organization uses this.`:null});
-    if(HIGH_RISK_TLDS.includes(tld)) risk+=40;
+    if(HIGH_RISK_TLDS.includes(tld)){ risk+=40; recordTrigger('awareness'); }
 
     // Sector spoofing
     const isSpoof = sec.spoofDomains.some(p => p.test(host));
     checks.push({label:'Sector Domain Spoof',val:isSpoof?'DETECTED ✗':'NONE ✓',cls:isSpoof?'cv-fail':'cv-pass',note:isSpoof?`"${host}" appears to impersonate a ${sec.name} sector platform. Likely a credential harvesting site.`:null});
-    if(isSpoof){risk+=45;sectorHit=true;}
+    if(isSpoof){risk+=45;sectorHit=true; recordTrigger('credential');}
 
     // Legitimate domain
     const isLegit = sec.legitimateDomains.some(d => host===d||host.endsWith('.'+d));
@@ -1409,7 +1506,7 @@ async function analyzeURL() {
     // Suspicious path
     if(/login|verify|confirm|update|secure|account|password|credential|reset|auth/i.test(path)&&!isLegit){
       checks.push({label:'Path Keywords',val:'SUSPICIOUS',cls:'cv-warn',note:`Path contains credential-harvesting keywords: "${path.substring(0,60)}" — combined with an unverified domain, this is a phishing indicator.`});
-      risk+=15;
+      risk+=15; recordTrigger('credential');
     } else {
       checks.push({label:'Path Keywords',val:'NORMAL ✓',cls:'cv-pass'});
     }
@@ -1483,8 +1580,13 @@ async function analyzeURL() {
 
   uHistory.unshift({url:raw,verdict,vclass:risk>=60?'danger':risk>=25?'warn':'safe',score:risk,sector:SECTORS[currentSector].name});
   if(uHistory.length>8) uHistory=uHistory.slice(0,8);
+
+  scanLog.unshift({type:'url', vclass:risk>=60?'danger':risk>=25?'warn':'safe', label:risk>=60?'MALICIOUS':risk>=25?'SUSPICIOUS':'SAFE', detail:raw.substring(0,50), subject:'', sector:SECTORS[currentSector].name, score:risk, time:new Date().toLocaleTimeString()});
+  if(scanLog.length > 20) scanLog = scanLog.slice(0,20);
+
   renderURLHistory();
   updateDashboard();
+  saveState();
 }
 
 function renderURLHistory() {
@@ -1500,23 +1602,52 @@ function renderURLHistory() {
 // ═══════════════════════════════════════════════════
 //  COMPLIANCE PANEL
 // ═══════════════════════════════════════════════════
+const TRIGGER_LABELS = {
+  credential: '🔑 Credential / Access Control',
+  awareness: '⚠️ Social Engineering / Awareness',
+  transmission: '📡 Transmission Security',
+  data: '🗄️ Data Exposure / Protection',
+  bec: '💼 BEC / Wire Fraud',
+  malware: '☠️ Malware / Ransomware',
+  incident: '🚨 Incident Response'
+};
+
 function renderCompliancePanel() {
   const sec = SECTORS[currentSector];
   const fw = sec.complianceFramework;
+  const triggers = sessionTriggers[currentSector];
+  const triggerEntries = Object.entries(triggers);
+  const totalHits = triggerEntries.reduce((s,[,n])=>s+n,0);
+
+  const sessionHtml = totalHits > 0
+    ? `<div class="comp-section" style="border-color:var(--amber-border);background:var(--amber-bg)">
+        <div class="comp-section-title" style="color:var(--amber)">⚡ Session Triggers — ${totalHits} detection${totalHits!==1?'s':''} this session</div>
+        ${triggerEntries.map(([k,n])=>`<div class="comp-control"><span>${TRIGGER_LABELS[k]||k}</span><span class="comp-status cs-triggered">${n} trigger${n!==1?'s':''}</span></div>`).join('')}
+      </div>`
+    : `<div class="note-box" style="margin-bottom:10px">
+        <div class="note-title">ℹ️ No session detections yet</div>
+        Analyze emails or URLs to see which controls get triggered. Controls highlighted in amber indicate live detections.
+      </div>`;
 
   document.getElementById('compliance-content').innerHTML = `
     <div style="margin-bottom:12px">
       <div style="font-family:'IBM Plex Mono',monospace;font-size:0.82rem;color:var(--text);margin-bottom:4px">${sec.icon} ${sec.name} Sector</div>
       <div style="font-size:0.75rem;color:var(--text2)">${fw.title}</div>
     </div>
+    ${sessionHtml}
     ${fw.sections.map(s=>`
       <div class="comp-section">
         <div class="comp-section-title">📋 ${s.title}</div>
-        ${s.controls.map(c=>`<div class="comp-control"><span>${c.name}</span><span class="comp-status ${c.cls}">${c.status}</span></div>`).join('')}
+        ${s.controls.map(c=>{
+          const count = c.tk ? (triggers[c.tk]||0) : 0;
+          const statusCls = count > 0 ? 'cs-triggered' : c.cls;
+          const statusText = count > 0 ? `TRIGGERED (${count})` : c.status;
+          return `<div class="comp-control" title="${count>0?`Triggered ${count} time${count!==1?'s':''} this session`:''}"><span>${c.name}</span><span class="comp-status ${statusCls}">${statusText}</span></div>`;
+        }).join('')}
       </div>`).join('')}
     <div class="note-box">
       <div class="note-title">📌 About This Framework</div>
-      PhishGuard Pro maps every detected threat to the relevant ${fw.title} control, helping ${sec.name.toLowerCase()} organizations document their security posture and demonstrate compliance during audits.
+      PhishGuard Pro maps every detected threat to the relevant ${fw.title} control, helping ${sec.name.toLowerCase()} organizations document their security posture and demonstrate compliance during audits. Controls marked <strong style="color:var(--amber)">TRIGGERED</strong> reflect live detections in this session.
     </div>`;
 
   document.getElementById('threat-landscape').innerHTML = `
@@ -1543,6 +1674,14 @@ function updateDashboard() {
   const detectionRate = totalScans > 0 ? Math.round(((totalMalicious+totalSuspicious)/totalScans)*100) : 0;
   const activeSectors = Object.values(sectorScans).filter(v=>v>0).length;
 
+  try {
+    const saved = JSON.parse(localStorage.getItem(PGP_STATE_KEY)||'{}');
+    const el = document.getElementById('d-saved-at');
+    if(el) el.textContent = saved.savedAt
+      ? 'Last saved: ' + new Date(saved.savedAt).toLocaleString()
+      : 'Not yet saved';
+  } catch(e){}
+
   document.getElementById('d-total-scans').textContent = totalScans;
   document.getElementById('d-total-malicious').textContent = totalMalicious;
   document.getElementById('d-total-suspicious').textContent = totalSuspicious;
@@ -1566,14 +1705,17 @@ function updateDashboard() {
       </div>
     </div>`).join('');
 
-  // Threat log
-  if(threatLog.length===0){
-    document.getElementById('dashboard-threats').innerHTML='<div class="empty"><div class="empty-text">No threats detected yet.<br>Run some scans to populate this view.</div></div>';
+  // Scan activity feed — shows every analysis, not just threats
+  if(scanLog.length===0){
+    document.getElementById('dashboard-threats').innerHTML='<div class="empty"><div class="empty-text">No scans yet.<br>Analyze emails or URLs to populate this view.</div></div>';
   } else {
-    document.getElementById('dashboard-threats').innerHTML = threatLog.slice(0,8).map(t=>`
+    document.getElementById('dashboard-threats').innerHTML = scanLog.slice(0,8).map(t=>`
       <div class="history-item">
-        <div class="history-verdict hv-danger">THREAT</div>
-        <div class="history-info"><div class="history-main">${t.text}</div><div class="history-sub">${t.sector} · ${t.time}</div></div>
+        <div class="history-verdict hv-${t.vclass}">${t.label}</div>
+        <div class="history-info">
+          <div class="history-main">${t.detail}</div>
+          <div class="history-sub">${t.subject ? t.subject + ' · ' : ''}${t.sector} · ${t.score}/100 · ${t.time}</div>
+        </div>
       </div>`).join('');
   }
 }
@@ -1741,6 +1883,23 @@ async function gmailAnalyzeMessage(messageId, btn) {
   }
 }
 
+const GMAIL_CATEGORY_TRIGGERS = {
+  'Suspicious Sender Domain': ['credential','incident'],
+  'Reply-To Mismatch': ['transmission','credential'],
+  'Return-Path Mismatch': ['transmission'],
+  'Spoofed Brand Names': ['credential'],
+  'Urgent Language': ['awareness'],
+  'Credential Harvesting Language': ['credential'],
+  'BEC / Wire Fraud Indicators': ['bec','incident'],
+  'Invoice / Payment Fraud': ['bec'],
+  'Suspicious URL — Raw IP': ['transmission'],
+  'Shortened URLs': ['awareness'],
+  'Unusual TLDs in Links': ['awareness','transmission'],
+  'High-Risk Attachments': ['malware'],
+  'Authentication Failure': ['transmission'],
+  'Suspicious Authentication': ['credential']
+};
+
 function renderGmailAnalysisResult(data, container) {
   const a = data.analysis;
   const verdictMap = {
@@ -1750,6 +1909,13 @@ function renderGmailAnalysisResult(data, container) {
     'SAFE': ['safe','✅']
   };
   const [vclass, vicon] = verdictMap[a.verdict] || ['safe','✅'];
+
+  // Record compliance triggers from Gmail findings
+  (a.findings || []).filter(f => f.severity === 'critical' || f.severity === 'warning').forEach(f => {
+    const keys = GMAIL_CATEGORY_TRIGGERS[f.category] || [];
+    keys.forEach(k => recordTrigger(k));
+  });
+  saveState();
 
   const findingHtml = (a.findings || []).map(f => {
     const cls = f.severity === 'critical' ? 'critical' : f.severity === 'warning' ? 'warning' : f.severity === 'safe' ? 'safe' : '';
@@ -1910,8 +2076,11 @@ function handleGmailRedirectParams() {
 // ═══════════════════════════════════════════════════
 //  INIT
 // ═══════════════════════════════════════════════════
+loadState();
 renderSamples();
 renderURLSamples();
+renderEmailHistory();
+renderURLHistory();
 renderCompliancePanel();
 updateDashboard();
 loadSavedKeys();

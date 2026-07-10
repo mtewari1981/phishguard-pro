@@ -10,7 +10,13 @@ const analyzeEmailPhish = require('./phish-engine');
 const app = express();
 
 app.use(express.json());
-app.use(express.static(__dirname));
+app.use(express.static(__dirname, {
+  setHeaders(res, filePath) {
+    if (filePath.endsWith('.html')) {
+      res.setHeader('Cache-Control', 'no-store');
+    }
+  }
+}));
 
 app.use(session({
   secret: process.env.SESSION_SECRET || 'change-me-in-production',
