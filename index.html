@@ -1562,6 +1562,13 @@ function renderEmailHistory() {
     </div>`).join('');
 }
 
+function openSuspiciousURL(url, risk) {
+  const confirmed = confirm(
+    `⚠️ Warning — Suspicious URL\n\nThis URL scored ${risk}/100 and has suspicious indicators.\n\nOnly proceed if you are certain this is a legitimate site and you are in a safe/sandboxed environment.\n\nOpen anyway?`
+  );
+  if (confirmed) window.open(url, '_blank', 'noopener,noreferrer');
+}
+
 // ═══════════════════════════════════════════════════
 //  URL ANALYSIS
 // ═══════════════════════════════════════════════════
@@ -1709,6 +1716,14 @@ async function analyzeURL() {
       ${risk>=60?'<span class="tag tag-red">Do Not Visit</span><span class="tag tag-red">Block in Firewall</span><span class="tag tag-red">Report to IT</span><span class="tag tag-red">Compliance Risk</span>':''}
       ${risk>=25&&risk<60?'<span class="tag tag-amber">Verify Before Visiting</span><span class="tag tag-amber">Contact IT if Unsure</span>':''}
       ${risk<25?'<span class="tag tag-teal">Safe to Visit</span><span class="tag tag-teal">No Compliance Risk Detected</span>':''}
+    </div>
+    <div style="margin-top:12px">
+      ${risk>=60
+        ? `<button disabled style="padding:9px 18px;border-radius:6px;border:1px solid var(--red-border);background:var(--red-bg);color:var(--red);font-size:0.82rem;cursor:not-allowed;opacity:0.7" title="URL flagged as malicious — opening blocked">🚫 Open URL — Blocked (Malicious)</button>`
+        : risk>=25
+          ? `<button onclick="openSuspiciousURL('${raw.replace(/'/g,"\\'")}',${risk})" style="padding:9px 18px;border-radius:6px;border:1px solid var(--amber-border);background:var(--amber-bg);color:var(--amber);font-size:0.82rem;cursor:pointer">⚠️ Open URL — Proceed with Caution</button>`
+          : `<button onclick="window.open('${raw.replace(/'/g,"\\'")}','_blank','noopener,noreferrer')" style="padding:9px 18px;border-radius:6px;border:1px solid var(--accent-border);background:var(--accent-bg);color:var(--accent);font-size:0.82rem;cursor:pointer">↗ Open URL</button>`
+      }
     </div>`;
   document.getElementById('u-results').innerHTML = html;
 
