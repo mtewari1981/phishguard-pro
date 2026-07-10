@@ -781,6 +781,7 @@ async function checkLiveThreats(url) {
       const proxyRes = await fetch(`/api/virustotal/url?url=${encodeURIComponent(url)}`, {
         headers: { 'x-vt-key': vtKey }
       });
+      const vtLink = `<a href="https://www.virustotal.com/gui/search/${encodeURIComponent(url)}" target="_blank" style="color:var(--blue)">View on VirusTotal ↗</a>`;
       if (proxyRes.ok) {
         const data = await proxyRes.json();
         const stats = data.data?.attributes?.last_analysis_stats || {};
@@ -789,7 +790,6 @@ async function checkLiveThreats(url) {
         const harmless   = stats.harmless   || 0;
         const undetected = stats.undetected || 0;
         const total = malicious + suspicious + harmless + undetected;
-        const vtLink = `<a href="https://www.virustotal.com/gui/search/${encodeURIComponent(url)}" target="_blank" style="color:var(--blue)">View on VirusTotal ↗</a>`;
         const verdict = malicious >= 3 ? 'MALICIOUS' : malicious >= 1 || suspicious >= 3 ? 'SUSPICIOUS' : 'CLEAN';
         results.push({
           source: 'VirusTotal', icon: '🦠',
@@ -797,8 +797,17 @@ async function checkLiveThreats(url) {
           cls: verdict === 'MALICIOUS' ? 'ls-malicious' : verdict === 'SUSPICIOUS' ? 'ls-suspicious' : 'ls-clean',
           detail: `${malicious} malicious · ${suspicious} suspicious · ${harmless} clean out of ${total} engines · ${vtLink}`
         });
-      } else if (proxyRes.status === 404) {
-        results.push({ source: 'VirusTotal', icon: '🦠', verdict: 'NOT SCANNED', cls: 'ls-none', detail: `URL not yet in VirusTotal database · <a href="https://www.virustotal.com/gui/home/url" target="_blank" style="color:var(--blue)">Submit for scan ↗</a>` });
+      } else if (proxyRes.status === 202) {
+        const data = await proxyRes.json().catch(() => ({}));
+        const stats = data.analysis?.stats || {};
+        const malicious = stats.malicious || 0;
+        const suspicious = stats.suspicious || 0;
+        if (malicious > 0 || suspicious > 0) {
+          const verdict = malicious >= 3 ? 'MALICIOUS' : 'SUSPICIOUS';
+          results.push({ source: 'VirusTotal', icon: '🦠', verdict, cls: verdict === 'MALICIOUS' ? 'ls-malicious' : 'ls-suspicious', detail: `Scan in progress — ${malicious} malicious · ${suspicious} suspicious so far · ${vtLink}` });
+        } else {
+          results.push({ source: 'VirusTotal', icon: '🦠', verdict: 'SCANNING', cls: 'ls-none', detail: `URL submitted — scan in progress, check back in ~60 seconds · ${vtLink}` });
+        }
       } else {
         results.push({ source: 'VirusTotal', icon: '🦠', verdict: 'ERROR', cls: 'ls-none', detail: `API error ${proxyRes.status} — verify your VirusTotal API key` });
       }

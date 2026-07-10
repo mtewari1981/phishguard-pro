@@ -389,15 +389,48 @@ app.get('/api/virustotal/url', async (req, res) => {
   if (!vtKey) return res.status(401).json({ error: 'VirusTotal API key required.' });
 
   const id = Buffer.from(url).toString('base64').replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
+  const headers = { 'x-apikey': vtKey, 'Accept': 'application/json' };
 
   try {
-    const r = await fetch(`https://www.virustotal.com/api/v3/urls/${id}`, {
-      headers: { 'x-apikey': vtKey, 'Accept': 'application/json' }
+    // 1. Try existing report first
+    const r = await fetch(`https://www.virustotal.com/api/v3/urls/${id}`, { headers });
+    if (r.ok) return res.json(await r.json());
+
+    if (r.status !== 404) {
+      return res.status(r.status).json({ error: `VirusTotal API error ${r.status}` });
+    }
+
+    // 2. URL not in database — submit it for a fresh scan
+    const submitRes = await fetch('https://www.virustotal.com/api/v3/urls', {
+      method: 'POST',
+      headers: { ...headers, 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({ url }).toString()
     });
-    if (r.status === 404) return res.status(404).json({ error: 'URL not found in VirusTotal database.' });
-    if (!r.ok) return res.status(r.status).json({ error: `VirusTotal API error ${r.status}` });
-    const data = await r.json();
-    res.json(data);
+
+    if (!submitRes.ok) {
+      return res.status(submitRes.status).json({ error: `VirusTotal submit error ${submitRes.status}` });
+    }
+
+    const submitData = await submitRes.json();
+    const analysisId = submitData.data?.id;
+
+    // 3. Wait 8 seconds then poll the analysis result once
+    await new Promise(resolve => setTimeout(resolve, 8000));
+
+    const analysisRes = await fetch(`https://www.virustotal.com/api/v3/analyses/${analysisId}`, { headers });
+    if (analysisRes.ok) {
+      const analysis = await analysisRes.json();
+      const status = analysis.data?.attributes?.status;
+      if (status === 'completed') {
+        // Re-fetch the full URL report now that it exists
+        const reportRes = await fetch(`https://www.virustotal.com/api/v3/urls/${id}`, { headers });
+        if (reportRes.ok) return res.json(await reportRes.json());
+      }
+      // Still in progress — return partial analysis stats
+      return res.status(202).json({ pending: true, analysis: analysis.data?.attributes });
+    }
+
+    return res.status(202).json({ pending: true });
   } catch (err) {
     console.error('VirusTotal proxy error:', err.message);
     res.status(502).json({ error: 'Failed to reach VirusTotal: ' + err.message });
