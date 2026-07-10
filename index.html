@@ -483,6 +483,27 @@ table.gmail-table{width:100%;border-collapse:collapse;font-size:0.78rem}
 <div class="panel" id="panel-gmail">
 <div class="container">
 
+  <!-- Whitelist Notice -->
+  <div style="background:var(--amber-bg);border:1px solid var(--amber-border);border-radius:10px;padding:16px 18px;margin-bottom:1.25rem">
+    <div style="font-family:'IBM Plex Mono',monospace;font-size:0.72rem;color:var(--amber);margin-bottom:8px">⚠️ ACCESS RESTRICTED — WHITELIST REQUIRED</div>
+    <div style="font-size:0.8rem;color:var(--text);margin-bottom:14px;line-height:1.6">
+      Gmail integration is currently in <strong>Google OAuth testing mode</strong>. Only pre-approved email addresses can connect.
+      Submit your details below and we'll whitelist your account within 24 hours.
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end">
+      <div style="flex:1;min-width:130px">
+        <div style="font-size:0.7rem;color:var(--text2);margin-bottom:4px">Your name</div>
+        <input type="text" id="wl-name" placeholder="Jane Smith" style="margin:0;padding:8px 11px;font-size:0.8rem">
+      </div>
+      <div style="flex:1;min-width:180px">
+        <div style="font-size:0.7rem;color:var(--text2);margin-bottom:4px">Email address to whitelist</div>
+        <input type="email" id="wl-email" placeholder="jane@example.com" style="margin:0;padding:8px 11px;font-size:0.8rem">
+      </div>
+      <button onclick="requestGmailAccess()" style="padding:8px 18px;background:var(--amber);color:#0a0f1e;border:none;border-radius:6px;font-size:0.8rem;font-weight:600;cursor:pointer;white-space:nowrap">Request Access</button>
+    </div>
+    <div id="wl-confirm" style="display:none;margin-top:10px;font-size:0.75rem;color:var(--amber)">✅ Request sent — we'll confirm within 24 hours.</div>
+  </div>
+
   <!-- Privacy Notice -->
   <div class="gmail-privacy">
     <div class="gmail-privacy-title">🔒 Privacy &amp; Data Notice</div>
@@ -2165,6 +2186,16 @@ function formatGmailDate(dateStr) {
 function escapeHtml(str) {
   if(!str) return '';
   return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function requestGmailAccess() {
+  const name  = document.getElementById('wl-name').value.trim();
+  const email = document.getElementById('wl-email').value.trim();
+  if (!name || !email) { alert('Please enter your name and email address.'); return; }
+  const subject = encodeURIComponent('PhishGuard Pro — Gmail Whitelist Request');
+  const body    = encodeURIComponent(`Hi,\n\nPlease whitelist my email address for PhishGuard Pro Gmail integration.\n\nName: ${name}\nEmail: ${email}\n\nThank you!`);
+  window.location.href = `mailto:monika.chandan@gmail.com?subject=${subject}&body=${body}`;
+  document.getElementById('wl-confirm').style.display = 'block';
 }
 
 // ── Handle redirect params from OAuth callback ─────────────────────────────────
