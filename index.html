@@ -1136,7 +1136,33 @@ const SECTORS = {
 // ═══════════════════════════════════════════════════
 //  UNIVERSAL PATTERNS
 // ═══════════════════════════════════════════════════
-const HIGH_RISK_TLDS = ['.tk','.ml','.ga','.cf','.gq','.pw','.top','.xyz','.online','.click','.ru','.cn','.su'];
+const HIGH_RISK_TLDS = [
+  '.tk','.ml','.ga','.cf','.gq','.pw','.top','.xyz','.online','.click',
+  '.ru','.cn','.su','.icu','.vip','.cc','.bz','.ws','.zip','.mov',
+  '.buzz','.monster','.cyou','.fit','.bar','.cfd','.sbs'
+];
+
+const URL_BRAND_SPOOF = [
+  {brand:'PayPal',         re:/paypa[l1]|pay-pal|paypai/i},
+  {brand:'Microsoft',      re:/micr[o0]s[o0]ft|microsoft-/i},
+  {brand:'Google',         re:/g[o0]{2}gle|googl[e3]/i},
+  {brand:'Apple',          re:/app[l1]e-[^.]+\.|apple\.(?!com$)/i},
+  {brand:'Amazon',         re:/amaz[o0]n-|amaz[o0]n\.(?!com$|aws\.)/i},
+  {brand:'Netflix',        re:/netfl[i1]x/i},
+  {brand:'Chase',          re:/chase-[^.]+\.|chas[e3]bank/i},
+  {brand:'Bank of America',re:/bankofamerica-|boa-online/i},
+  {brand:'Wells Fargo',    re:/wellsfarg[o0]|wells-fargo/i},
+  {brand:'IRS',            re:/irs-[^.]+\.|irs\.(?!gov)/i},
+  {brand:'DocuSign',       re:/d[o0]cusign-|d[o0]cusign\.(?!com$)/i},
+  {brand:'DHL',            re:/dhl-[^.]+\./i},
+  {brand:'FedEx',          re:/fedex-[^.]+\.|f[e3]d[e3]x-/i},
+  {brand:'LinkedIn',       re:/1inkedin|linkedln|linkedin-/i},
+  {brand:'Dropbox',        re:/dr[o0]pbox-/i},
+  {brand:'Zoom',           re:/z[o0]{2}m-[^.]+\.|zoom-meeting/i},
+  {brand:'Stripe',         re:/str[i1]pe-|str1pe\./i},
+  {brand:'PayPal/Venmo',   re:/venm[o0]-/i},
+  {brand:'Coinbase',       re:/c[o0]inbase-|c[o0]inbas[e3]\./i},
+];
 const URGENCY_PHRASES = ['act immediately','asap','24 hours','48 hours','expires today','action required','final notice','account will be closed','verify now','password expired','immediately','respond urgently','last chance','do not ignore','time sensitive'];
 const BEC_WORDS = ['wire transfer','ach payment','routing number','account number','process payment','do not discuss','confidential request','board meeting','executive','ceo','cfo','president','payroll','vendor payment','urgent payment'];
 const ATTACHMENT_RISKS = /\.exe|\.zip|\.js|\.vbs|\.docm|\.xlsm|\.ps1|\.bat|\.cmd|\.scr/i;
@@ -1499,6 +1525,18 @@ async function analyzeURL() {
       checks.push({label:'Host Type',val:'DOMAIN ✓',cls:'cv-pass'});
     }
 
+    // @ symbol trick (host is after @, pre-@ text looks like a legit domain)
+    if(parsed.username) {
+      checks.push({label:'URL Deception (@)',val:'DETECTED ✗',cls:'cv-fail',note:`URL contains credentials before "@" — browsers ignore "${parsed.username}" and load "${host}" instead. Classic technique to make evil.com look like google.com.`});
+      risk+=40; recordTrigger('credential');
+    }
+
+    // Punycode / homograph (xn-- = internationalized domain that looks like a real brand)
+    if(host.includes('xn--')) {
+      checks.push({label:'Homograph Attack',val:'PUNYCODE ✗',cls:'cv-fail',note:`Domain uses punycode encoding (xn--): "${host}" — attackers register lookalike domains using international characters (e.g. аpple.com with a Cyrillic "а") that appear identical to real brands.`});
+      risk+=35; recordTrigger('credential');
+    }
+
     // TLD
     checks.push({label:'TLD Risk',val:HIGH_RISK_TLDS.includes(tld)?`HIGH (${tld})`:'LOW',cls:HIGH_RISK_TLDS.includes(tld)?'cv-fail':'cv-pass',note:HIGH_RISK_TLDS.includes(tld)?`The "${tld}" TLD is predominantly used by attackers. No legitimate ${sec.name} organization uses this.`:null});
     if(HIGH_RISK_TLDS.includes(tld)){ risk+=40; recordTrigger('awareness'); }
@@ -1508,17 +1546,32 @@ async function analyzeURL() {
     checks.push({label:'Sector Domain Spoof',val:isSpoof?'DETECTED ✗':'NONE ✓',cls:isSpoof?'cv-fail':'cv-pass',note:isSpoof?`"${host}" appears to impersonate a ${sec.name} sector platform. Likely a credential harvesting site.`:null});
     if(isSpoof){risk+=45;sectorHit=true; recordTrigger('credential');}
 
+    // Global brand impersonation (typosquatting / lookalike domains)
+    const spoofedBrand = URL_BRAND_SPOOF.find(b => b.re.test(host));
+    if(spoofedBrand) {
+      checks.push({label:'Brand Impersonation',val:`${spoofedBrand.brand} ✗`,cls:'cv-fail',note:`Domain appears to impersonate ${spoofedBrand.brand} using typosquatting or character substitution — designed to steal credentials from victims who don't notice the difference.`});
+      risk+=45; recordTrigger('credential');
+    } else {
+      checks.push({label:'Brand Impersonation',val:'NONE ✓',cls:'cv-pass'});
+    }
+
     // Legitimate domain
     const isLegit = sec.legitimateDomains.some(d => host===d||host.endsWith('.'+d));
     checks.push({label:'Known Safe Domain',val:isLegit?'VERIFIED ✓':'NOT VERIFIED',cls:isLegit?'cv-pass':'cv-na',note:!isLegit?'Domain not in verified safe list. Exercise caution.':null});
     if(isLegit) risk = Math.max(0, risk-30);
 
-    // Suspicious path
-    if(/login|verify|confirm|update|secure|account|password|credential|reset|auth/i.test(path)&&!isLegit){
-      checks.push({label:'Path Keywords',val:'SUSPICIOUS',cls:'cv-warn',note:`Path contains credential-harvesting keywords: "${path.substring(0,60)}" — combined with an unverified domain, this is a phishing indicator.`});
+    // Suspicious path keywords (expanded)
+    if(/login|verify|confirm|update|secure|account|password|credential|reset|auth|signin|sign-in|wallet|billing|invoice|payment|checkout|webscr|banking|validate|suspend|unlock|restricted/i.test(path)&&!isLegit){
+      checks.push({label:'Path Keywords',val:'SUSPICIOUS',cls:'cv-warn',note:`Path contains credential-harvesting or financial keywords: "${path.substring(0,60)}" — combined with an unverified domain, this is a phishing indicator.`});
       risk+=15; recordTrigger('credential');
     } else {
       checks.push({label:'Path Keywords',val:'NORMAL ✓',cls:'cv-pass'});
+    }
+
+    // Open redirect parameters
+    if(/[?&](redirect|url|next|goto|return|redir|target|returnurl|callback|dest|destination)=/i.test(parsed.search)){
+      checks.push({label:'Open Redirect',val:'DETECTED ✗',cls:'cv-warn',note:`URL contains an open redirect parameter (${parsed.search.substring(0,40)}) — attackers chain these to route victims through a trusted domain before landing on a malicious page, bypassing link checkers.`});
+      risk+=20; recordTrigger('transmission');
     }
 
     // Subdomain depth
@@ -1530,10 +1583,23 @@ async function analyzeURL() {
       checks.push({label:'Subdomain Depth',val:'NORMAL ✓',cls:'cv-pass'});
     }
 
+    // Hyphen abuse (3+ hyphens = stuffing trust words into a fake domain)
+    const hyphenCount = (host.match(/-/g)||[]).length;
+    if(hyphenCount>=3){
+      checks.push({label:'Hyphen Abuse',val:`HIGH (${hyphenCount} hyphens)`,cls:'cv-warn',note:`Domain contains ${hyphenCount} hyphens — attackers pack brand names and trust words into fake domains like "secure-paypal-update-account.com" to appear legitimate.`});
+      risk+=15;
+    }
+
     // URL length
     if(url.length > 100){
       checks.push({label:'URL Length',val:`LONG (${url.length} chars)`,cls:'cv-warn',note:'Unusually long URLs are often used to hide the true destination or contain obfuscated parameters.'});
       risk+=5;
+    }
+
+    // Percent-encoding obfuscation in the host/path (before query string)
+    if(url.split('?')[0].replace('https://','').replace('http://','').includes('%')){
+      checks.push({label:'Encoding Obfuscation',val:'DETECTED ✗',cls:'cv-warn',note:'Percent-encoded characters found in the URL path — commonly used to hide malicious keywords from security scanners and email filters.'});
+      risk+=15;
     }
   }
 

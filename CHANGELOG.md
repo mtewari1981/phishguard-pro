@@ -4,6 +4,41 @@ All notable changes to PhishGuard Pro are documented here.
 
 ---
 
+## [2026-07-09] — Expanded URL Detection Engine
+
+### Added — Global brand impersonation detection
+- New `URL_BRAND_SPOOF` pattern list detects typosquatting and lookalike domains for 19 major brands regardless of active sector: PayPal, Microsoft, Google, Apple, Amazon, Netflix, Chase, Bank of America, Wells Fargo, IRS, DocuSign, DHL, FedEx, LinkedIn, Dropbox, Zoom, Stripe, Venmo, Coinbase
+- Fires +45 risk and `credential` trigger — results show which brand is being impersonated
+
+### Added — @ symbol URL deception detection
+- Detects `https://google.com@evil.com` style URLs where browsers ignore everything before `@` and load `evil.com`
+- Fires +40 risk and `credential` trigger
+
+### Added — Punycode / homograph attack detection
+- Detects `xn--` in the domain — internationalized lookalike domains (e.g. аpple.com with Cyrillic characters) that appear identical to real brands
+- Fires +35 risk and `credential` trigger
+
+### Added — Open redirect parameter detection
+- Detects `?redirect=`, `?url=`, `?next=`, `?goto=`, `?return=`, `?redir=`, `?target=`, `?callback=`, `?dest=`, `?destination=` in query string
+- Fires +20 risk and `transmission` trigger
+
+### Added — Hyphen abuse detection
+- Domains with 3+ hyphens (e.g. `secure-paypal-update-account.com`) flagged as suspicious
+- Fires +15 risk
+
+### Added — Percent-encoding obfuscation detection
+- Detects `%`-encoded characters in the URL path used to hide keywords from security scanners
+- Fires +15 risk
+
+### Updated — Path keyword list expanded
+- Added: `signin`, `sign-in`, `wallet`, `billing`, `invoice`, `payment`, `checkout`, `webscr`, `banking`, `validate`, `suspend`, `unlock`, `restricted`
+
+### Updated — High-risk TLD list expanded
+- Added 14 TLDs: `.icu`, `.vip`, `.cc`, `.bz`, `.ws`, `.zip`, `.mov`, `.buzz`, `.monster`, `.cyou`, `.fit`, `.bar`, `.cfd`, `.sbs`
+- Total now 27 monitored TLDs (was 13)
+
+---
+
 ## [2026-07-09] — Email Form Clear Button
 
 ### Added — Clear button on Email Phishing Analyzer
