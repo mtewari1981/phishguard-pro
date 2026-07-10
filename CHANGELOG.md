@@ -4,6 +4,26 @@ All notable changes to PhishGuard Pro are documented here.
 
 ---
 
+## [2026-07-09] — Open URL Button & VirusTotal Auto-Submit
+
+### Added — Open URL button on URL analysis results
+- After every URL scan a context-aware **Open URL** button appears below the results
+- **LIKELY SAFE** — green button opens the URL directly in a new tab
+- **SUSPICIOUS** — amber button shows a confirmation dialog with the risk score before opening
+- **MALICIOUS** — button is disabled and labelled "Blocked (Malicious)" — cannot be clicked
+- All opens use `noopener,noreferrer` so the destination cannot access the PhishGuard Pro window
+
+### Fixed — Open URL button opening localhost path instead of destination
+- Button was passing the raw user input (e.g. `pink.com`) to `window.open`, causing browsers to treat it as a relative path and navigate to `http://localhost:3000/pink.com`
+- Fixed to use the normalized URL variable (with `https://` prepended when no protocol is present)
+
+### Updated — VirusTotal auto-submit on unknown URLs
+- When a URL has no existing VirusTotal report (404), the server proxy now automatically submits it for a fresh scan, waits 8 seconds, and returns the completed result
+- If the scan is still in progress, returns a **SCANNING** status with partial stats and a VirusTotal link
+- Added graceful fallback for stale server (old server returning 404 now shows a helpful message instead of "verify your API key")
+
+---
+
 ## [2026-07-09] — README & Documentation Update
 
 ### Updated — README

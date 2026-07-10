@@ -91,6 +91,7 @@ Analyze any URL before visiting:
 - **Safe domain verification** — cross-references against a curated list of legitimate sector domains
 - **Subdomain depth check** — catches obfuscation like `login.epic.verify.malicious.tk`
 - **URL length anomaly** — flags unusually long URLs used to hide malicious parameters
+- **Open URL button** — analyze first, then open directly from the result; button behavior adapts to verdict: opens immediately if SAFE, requires confirmation if SUSPICIOUS, blocked entirely if MALICIOUS
 
 ### 🌐 Live Threat Intelligence
 After each URL scan, PhishGuard Pro queries multiple external threat databases in parallel:
