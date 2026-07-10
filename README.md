@@ -72,16 +72,23 @@ Paste any suspicious email and get an instant threat assessment:
 - **Embedded URL analysis** — extracts and evaluates every link in the email body
 - **Risk score (0–100)** — quantified verdict: `LIKELY SAFE` · `SUSPICIOUS` · `PHISHING / MALICIOUS`
 - **Compliance citations** — each finding references the specific HIPAA, PCI-DSS, FISMA, FERPA, or ISO control at risk
+- **Clear button** — reset all fields and results without affecting dashboard history
 
 ### 🔗 URL / Web Traffic Checker
 Analyze any URL before visiting:
 
 - **Protocol check** — flags unencrypted HTTP connections
 - **Raw IP detection** — no legitimate healthcare, banking, or government site uses a raw IP address
-- **High-risk TLD detection** — covers `.tk`, `.ml`, `.ga`, `.xyz`, `.top`, `.pw`, and 8+ other abused domains
-- **Sector spoof detection** — typosquatting patterns for sector-specific platforms
+- **High-risk TLD detection** — 27 monitored TLDs including `.tk`, `.xyz`, `.icu`, `.zip`, `.buzz`, `.monster`, and more
+- **Global brand impersonation** — typosquatting and character-substitution detection for 19 major brands (PayPal, Microsoft, Google, Chase, IRS, DocuSign, Amazon, Netflix, and more) regardless of active sector
+- **Sector spoof detection** — additional typosquatting patterns specific to the active sector's platforms
+- **@ symbol URL deception** — catches `https://google.com@evil.com` style attacks where browsers ignore everything before the `@`
+- **Punycode / homograph detection** — flags internationalized lookalike domains (e.g. аpple.com with Cyrillic characters)
+- **Open redirect detection** — spots `?redirect=`, `?url=`, `?goto=` and 6 other redirect parameters used to chain victims through trusted domains
+- **Suspicious path keywords** — expanded to cover `/signin`, `/wallet`, `/billing`, `/payment`, `/checkout`, `/webscr`, `/validate`, and more
+- **Hyphen abuse detection** — domains with 3+ hyphens used to pack brand names into fake domains
+- **Percent-encoding obfuscation** — detects `%`-encoded characters used to hide malicious keywords from filters
 - **Safe domain verification** — cross-references against a curated list of legitimate sector domains
-- **Suspicious path analysis** — detects `/login`, `/verify`, `/reset` patterns on unverified domains
 - **Subdomain depth check** — catches obfuscation like `login.epic.verify.malicious.tk`
 - **URL length anomaly** — flags unusually long URLs used to hide malicious parameters
 
@@ -93,13 +100,16 @@ After each URL scan, PhishGuard Pro queries multiple external threat databases i
 | **URLScan.io** | No | Historical domain scans and malicious verdicts |
 | **PhishTank** | Free key | Known phishing URL database |
 | **AbuseIPDB** | Free key | IP address abuse reports (IP targets only) |
+| **🦠 VirusTotal** | Free key | 70+ antivirus and threat intelligence engine consensus |
 | **🤖 AI Classification** | Anthropic key | Claude-powered verdict with reasoning |
 
-The AI Classification feature uses **Claude Haiku** to reason about URL structure and return a `MALICIOUS` / `SUSPICIOUS` / `SAFE` verdict with a confidence level and plain-English explanation — catching novel attacks not yet in any signature database.
+**VirusTotal** queries 70+ security engines and returns a consensus verdict — MALICIOUS (3+ engines flagging), SUSPICIOUS, or CLEAN — with a direct link to the full report. This closes the gap where structurally clean but known-malicious domains score 0 on the rule engine. Requires the Node.js backend (`node server.js`) to proxy the request and bypass browser CORS restrictions.
+
+The **AI Classification** feature uses **Claude Haiku** to reason about URL structure and return a `MALICIOUS` / `SUSPICIOUS` / `SAFE` verdict with a confidence level and plain-English explanation — catching novel attacks not yet in any signature database.
 
 All API keys are stored in your browser's `localStorage` only and are never logged or shared.
 
-> **How API keys work for visitors:** Each user enters their own API keys — PhishTank, AbuseIPDB, and Anthropic. Keys are saved in their own browser and never sent to anyone else. This means every user brings their own credentials, so there are no shared costs and no risk of your keys being used by others. Anthropic keys are free to create at [console.anthropic.com](https://console.anthropic.com/) and cost fractions of a cent per scan — set a monthly budget limit to keep spend in check.
+> **How API keys work for visitors:** Each user enters their own API keys — PhishTank, AbuseIPDB, VirusTotal, and Anthropic. Keys are saved in their own browser and never sent to anyone else. This means every user brings their own credentials, so there are no shared costs and no risk of your keys being used by others. Anthropic keys are free to create at [console.anthropic.com](https://console.anthropic.com/) and cost fractions of a cent per scan — set a monthly budget limit to keep spend in check.
 
 ### 📋 Compliance Framework Tab
 - Dynamically renders the full compliance framework for the active sector
@@ -168,6 +178,7 @@ Enter keys in the **⚙️ Live API Keys** panel on the URL Checker tab:
 |-----|----------------|------|
 | PhishTank App Key | [phishtank.com/api_register.php](https://www.phishtank.com/api_register.php) | Free |
 | AbuseIPDB API Key | [abuseipdb.com/register](https://www.abuseipdb.com/register) | Free |
+| VirusTotal API Key | [virustotal.com/gui/join-us](https://www.virustotal.com/gui/join-us) | Free |
 | Anthropic API Key | [console.anthropic.com](https://console.anthropic.com/) | Pay-per-use (fractions of a cent per scan) |
 
 ---
@@ -197,7 +208,7 @@ Powered by a Node.js/Express backend with Google OAuth 2.0.
 
 PhishGuard Pro requests **the minimum possible scopes**. It cannot send, delete, label, or modify any emails or settings.
 
-> **Note on test users:** While your Google OAuth app is in Testing mode, up to **100 email addresses** can connect. Add test users in Google Cloud Console under **OAuth consent screen → Test users**. To allow anyone to connect, publish the app and complete Google's verification process.
+> **Access is by whitelist only.** While the Google OAuth app is in Testing mode, only pre-approved email addresses can connect. To request access, visit the **📬 Gmail Integration** tab and submit your name and email via the access request form — you'll be whitelisted within 24 hours. Up to **100 test users** are supported. To allow anyone to connect without whitelisting, publish the OAuth app and complete Google's verification process.
 
 ### Privacy guarantees
 

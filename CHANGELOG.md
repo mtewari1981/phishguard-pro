@@ -4,6 +4,28 @@ All notable changes to PhishGuard Pro are documented here.
 
 ---
 
+## [2026-07-09] — README & Documentation Update
+
+### Updated — README
+- URL Checker feature list expanded to cover all 7 new detection checks added this session (brand impersonation, @ trick, punycode, open redirect, hyphen abuse, encoding obfuscation, expanded path keywords, 27 TLDs)
+- Live Threat Intelligence table updated to include VirusTotal row with description of 70+ engine consensus and CORS proxy requirement
+- API Keys table updated with VirusTotal free key entry
+- Email Analyzer feature list updated to mention Clear button
+- Gmail Integration note updated: access is by whitelist — users submit name + email via the in-app form to request access within 24 hours
+- API keys intro updated to include VirusTotal in the list of user-supplied keys
+
+---
+
+## [2026-07-09] — Gmail Whitelist Request Form
+
+### Added — Access request notice on Gmail tab
+- Amber **⚠️ ACCESS RESTRICTED — WHITELIST REQUIRED** banner at the top of the Gmail Integration tab explains that the OAuth app is in testing mode and only pre-approved accounts can connect
+- Inline form (name + email + Request Access button) opens a pre-filled `mailto:` to request whitelisting — no server required
+- Confirmation message shown after submit
+- Notice is always visible regardless of connection state so users can share the form with colleagues
+
+---
+
 ## [2026-07-09] — VirusTotal Integration
 
 ### Added — VirusTotal URL reputation lookup
