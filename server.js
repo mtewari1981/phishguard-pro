@@ -379,6 +379,31 @@ Respond with this exact JSON schema and nothing else:
   }
 });
 
+// ─── VirusTotal — URL reputation proxy ────────────────────────────────────────
+
+app.get('/api/virustotal/url', async (req, res) => {
+  const url = req.query.url;
+  if (!url) return res.status(400).json({ error: 'url query parameter is required.' });
+
+  const vtKey = req.headers['x-vt-key'] || process.env.VIRUSTOTAL_API_KEY;
+  if (!vtKey) return res.status(401).json({ error: 'VirusTotal API key required.' });
+
+  const id = Buffer.from(url).toString('base64').replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
+
+  try {
+    const r = await fetch(`https://www.virustotal.com/api/v3/urls/${id}`, {
+      headers: { 'x-apikey': vtKey, 'Accept': 'application/json' }
+    });
+    if (r.status === 404) return res.status(404).json({ error: 'URL not found in VirusTotal database.' });
+    if (!r.ok) return res.status(r.status).json({ error: `VirusTotal API error ${r.status}` });
+    const data = await r.json();
+    res.json(data);
+  } catch (err) {
+    console.error('VirusTotal proxy error:', err.message);
+    res.status(502).json({ error: 'Failed to reach VirusTotal: ' + err.message });
+  }
+});
+
 // ─── Start server ──────────────────────────────────────────────────────────────
 
 const PORT = process.env.PORT || 3000;

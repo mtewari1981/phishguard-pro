@@ -4,6 +4,26 @@ All notable changes to PhishGuard Pro are documented here.
 
 ---
 
+## [2026-07-09] — VirusTotal Integration
+
+### Added — VirusTotal URL reputation lookup
+- New **🦠 VirusTotal** row in the Live Threat Intelligence panel queries 70+ antivirus and threat intelligence engines for a consensus verdict on any scanned URL
+- Verdict thresholds: 3+ engines flagging → **MALICIOUS** · 1–2 engines or 3+ suspicious → **SUSPICIOUS** · else → **CLEAN**
+- Results show malicious / suspicious / clean engine counts with a direct link to the full VirusTotal report
+- If the URL has never been submitted to VirusTotal, shows **NOT SCANNED** with a link to submit it
+
+### Added — VirusTotal proxy endpoint in server.js
+- New `GET /api/virustotal/url?url=...` endpoint proxies requests to the VirusTotal v3 API, bypassing browser CORS restrictions
+- Accepts the API key from the `x-vt-key` request header (sent by the browser) or falls back to `VIRUSTOTAL_API_KEY` in `.env`
+- When running standalone (no server), shows **BLOCKED** with a manual VirusTotal link as fallback
+
+### Added — VirusTotal API key field
+- New **VirusTotal API Key** input in the ⚙️ Live API Keys panel, saved and restored from localStorage
+- Free key available at virustotal.com — no rate limit for individual lookups on the free tier
+- Added `VIRUSTOTAL_API_KEY` to `.env.example` as an optional server-side alternative
+
+---
+
 ## [2026-07-09] — Expanded URL Detection Engine
 
 ### Added — Global brand impersonation detection

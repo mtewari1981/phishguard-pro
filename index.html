@@ -430,10 +430,12 @@ table.gmail-table{width:100%;border-collapse:collapse;font-size:0.78rem}
           <input type="text" id="key-phishtank" class="api-key-input" placeholder="Paste your PhishTank app key">
           <label>AbuseIPDB API Key</label>
           <input type="text" id="key-abuseipdb" class="api-key-input" placeholder="Paste your AbuseIPDB API key">
+          <label>VirusTotal API Key <span style="font-size:0.7rem;color:var(--text2);font-weight:400">(70+ engine scan — requires node server.js)</span></label>
+          <input type="text" id="key-virustotal" class="api-key-input" placeholder="Paste your VirusTotal API key">
           <label>Anthropic API Key <span style="font-size:0.7rem;color:var(--text2);font-weight:400">(AI classification)</span></label>
           <input type="text" id="key-anthropic" class="api-key-input" placeholder="Paste your Anthropic API key (sk-ant-...)">
           <button class="api-save-btn" onclick="saveApiKeys()">💾 Save Keys</button>
-          <div class="api-note">Keys are stored in your browser only — never sent anywhere except the respective API.<br>Free keys: <a href="https://www.phishtank.com/api_register.php" target="_blank" style="color:var(--blue)">PhishTank ↗</a> · <a href="https://www.abuseipdb.com/register" target="_blank" style="color:var(--blue)">AbuseIPDB ↗</a> · URLScan.io needs no key.<br>AI classification: <a href="https://console.anthropic.com/" target="_blank" style="color:var(--blue)">Anthropic Console ↗</a> (pay-per-use, very low cost)</div>
+          <div class="api-note">Keys are stored in your browser only — never sent anywhere except the respective API.<br>Free keys: <a href="https://www.phishtank.com/api_register.php" target="_blank" style="color:var(--blue)">PhishTank ↗</a> · <a href="https://www.abuseipdb.com/register" target="_blank" style="color:var(--blue)">AbuseIPDB ↗</a> · <a href="https://www.virustotal.com/gui/join-us" target="_blank" style="color:var(--blue)">VirusTotal ↗</a> · URLScan.io needs no key.<br>AI classification: <a href="https://console.anthropic.com/" target="_blank" style="color:var(--blue)">Anthropic Console ↗</a> (pay-per-use, very low cost)</div>
         </div>
       </div>
 
@@ -614,9 +616,11 @@ function toggleApiConfig() {
 function saveApiKeys() {
   const pt = document.getElementById('key-phishtank').value.trim();
   const ai = document.getElementById('key-abuseipdb').value.trim();
+  const vt = document.getElementById('key-virustotal').value.trim();
   const an = document.getElementById('key-anthropic').value.trim();
   if (pt) localStorage.setItem('pgp_phishtank', pt);
   if (ai) localStorage.setItem('pgp_abuseipdb', ai);
+  if (vt) localStorage.setItem('pgp_virustotal', vt);
   if (an) localStorage.setItem('pgp_anthropic', an);
   const btn = document.querySelector('.api-save-btn');
   btn.textContent = '✅ Saved!';
@@ -626,9 +630,11 @@ function saveApiKeys() {
 function loadSavedKeys() {
   const pt = getApiKey('phishtank');
   const ai = getApiKey('abuseipdb');
+  const vt = getApiKey('virustotal');
   const an = getApiKey('anthropic');
   if (pt) document.getElementById('key-phishtank').value = pt;
   if (ai) document.getElementById('key-abuseipdb').value = ai;
+  if (vt) document.getElementById('key-virustotal').value = vt;
   if (an) document.getElementById('key-anthropic').value = an;
 }
 
@@ -745,6 +751,41 @@ async function checkLiveThreats(url) {
     }
   } else {
     results.push({ source: 'AbuseIPDB', icon: '🛡️', verdict: 'N/A', cls: 'ls-none', detail: 'AbuseIPDB only checks raw IP addresses — not applicable for domain-based URLs' });
+  }
+
+  // VirusTotal — 70+ engine consensus via local server proxy (CORS blocks direct browser calls)
+  const vtKey = getApiKey('virustotal');
+  if (vtKey) {
+    try {
+      const proxyRes = await fetch(`/api/virustotal/url?url=${encodeURIComponent(url)}`, {
+        headers: { 'x-vt-key': vtKey }
+      });
+      if (proxyRes.ok) {
+        const data = await proxyRes.json();
+        const stats = data.data?.attributes?.last_analysis_stats || {};
+        const malicious  = stats.malicious  || 0;
+        const suspicious = stats.suspicious || 0;
+        const harmless   = stats.harmless   || 0;
+        const undetected = stats.undetected || 0;
+        const total = malicious + suspicious + harmless + undetected;
+        const vtLink = `<a href="https://www.virustotal.com/gui/search/${encodeURIComponent(url)}" target="_blank" style="color:var(--blue)">View on VirusTotal ↗</a>`;
+        const verdict = malicious >= 3 ? 'MALICIOUS' : malicious >= 1 || suspicious >= 3 ? 'SUSPICIOUS' : 'CLEAN';
+        results.push({
+          source: 'VirusTotal', icon: '🦠',
+          verdict,
+          cls: verdict === 'MALICIOUS' ? 'ls-malicious' : verdict === 'SUSPICIOUS' ? 'ls-suspicious' : 'ls-clean',
+          detail: `${malicious} malicious · ${suspicious} suspicious · ${harmless} clean out of ${total} engines · ${vtLink}`
+        });
+      } else if (proxyRes.status === 404) {
+        results.push({ source: 'VirusTotal', icon: '🦠', verdict: 'NOT SCANNED', cls: 'ls-none', detail: `URL not yet in VirusTotal database · <a href="https://www.virustotal.com/gui/home/url" target="_blank" style="color:var(--blue)">Submit for scan ↗</a>` });
+      } else {
+        results.push({ source: 'VirusTotal', icon: '🦠', verdict: 'ERROR', cls: 'ls-none', detail: `API error ${proxyRes.status} — verify your VirusTotal API key` });
+      }
+    } catch(e) {
+      results.push({ source: 'VirusTotal', icon: '🦠', verdict: 'BLOCKED', cls: 'ls-none', detail: `Proxy unavailable — run via "node server.js" for live VirusTotal lookups · <a href="https://www.virustotal.com/gui/search/${encodeURIComponent(url)}" target="_blank" style="color:var(--blue)">Check manually ↗</a>` });
+    }
+  } else {
+    results.push({ source: 'VirusTotal', icon: '🦠', verdict: 'KEY REQUIRED', cls: 'ls-none', detail: 'Add your free VirusTotal API key via ⚙️ API Keys · <a href="https://www.virustotal.com/gui/join-us" target="_blank" style="color:var(--blue)">Register free ↗</a>' });
   }
 
   // AI Classification — uses Anthropic Claude via browser-direct API
