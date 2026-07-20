@@ -320,7 +320,7 @@ table.gmail-table{width:100%;border-collapse:collapse;font-size:0.78rem}
 
 <!-- MISSION STRIP -->
 <div style="background:var(--bg2);border-bottom:1px solid var(--border);padding:0.6rem 2rem;font-size:0.78rem;color:var(--text2);line-height:1.5">
-  Designed to detect phishing threats and explain <em>why</em> they're dangerous — combining threat analysis with compliance framework alignment to serve as both a practical defensive tool and a learning resource for organizations strengthening their cybersecurity posture.
+  Real-time phishing, BEC, and social engineering detection across Healthcare, Finance, Government, Education, and Enterprise — with live threat intelligence, compliance impact tracking, and incident reporting.
 </div>
 
 <!-- SECTOR SELECTOR -->
@@ -343,7 +343,7 @@ table.gmail-table{width:100%;border-collapse:collapse;font-size:0.78rem}
 <div class="tabs">
   <div class="tab active" onclick="switchTab('email')">📧 Email Phishing Analyzer</div>
   <div class="tab" onclick="switchTab('url')">🔗 URL / Web Traffic Checker</div>
-  <div class="tab" onclick="switchTab('compliance')">📋 Compliance Framework</div>
+  <div class="tab" onclick="switchTab('compliance')">📋 Compliance Impact</div>
   <div class="tab" onclick="switchTab('dashboard')">📊 Dashboard</div>
   <div class="tab" onclick="switchTab('gmail')" id="tab-gmail">📬 Gmail Integration</div>
 </div>
@@ -468,11 +468,11 @@ table.gmail-table{width:100%;border-collapse:collapse;font-size:0.78rem}
 <div class="container">
   <div class="grid2">
     <div class="card">
-      <div class="card-title">📋 Active Compliance Framework</div>
+      <div class="card-title">📋 Compliance Status</div>
       <div id="compliance-content"></div>
     </div>
     <div class="card">
-      <div class="card-title">🎯 Sector Threat Landscape</div>
+      <div class="card-title">🎯 Detected Threats This Session</div>
       <div id="threat-landscape"></div>
     </div>
   </div>
@@ -940,12 +940,12 @@ const SECTORS = {
       ]
     },
     threatLandscape: [
-      {threat:'EHR credential phishing (EPIC, Cerner)',level:'CRITICAL',cls:'cs-risk'},
-      {threat:'Medicare/Medicaid billing fraud',level:'HIGH',cls:'cs-risk'},
-      {threat:'PHI exfiltration via email',level:'CRITICAL',cls:'cs-risk'},
-      {threat:'Ransomware via malicious attachments',level:'CRITICAL',cls:'cs-risk'},
-      {threat:'Business Email Compromise (BEC)',level:'HIGH',cls:'cs-risk'},
-      {threat:'Supply chain / vendor impersonation',level:'MEDIUM',cls:'cs-monitor'},
+      {threat:'EHR credential phishing (EPIC, Cerner)',level:'CRITICAL',cls:'cs-risk',tk:'credential'},
+      {threat:'Medicare/Medicaid billing fraud',level:'HIGH',cls:'cs-risk',tk:'data'},
+      {threat:'PHI exfiltration via email',level:'CRITICAL',cls:'cs-risk',tk:'transmission'},
+      {threat:'Ransomware via malicious attachments',level:'CRITICAL',cls:'cs-risk',tk:'malware'},
+      {threat:'Business Email Compromise (BEC)',level:'HIGH',cls:'cs-risk',tk:'bec'},
+      {threat:'Supply chain / vendor impersonation',level:'MEDIUM',cls:'cs-monitor',tk:'incident'},
     ]
   },
 
@@ -1003,12 +1003,12 @@ const SECTORS = {
       ]
     },
     threatLandscape: [
-      {threat:'Business Email Compromise (wire fraud)',level:'CRITICAL',cls:'cs-risk'},
-      {threat:'Bank/payment platform credential phishing',level:'CRITICAL',cls:'cs-risk'},
-      {threat:'IRS/tax authority impersonation',level:'HIGH',cls:'cs-risk'},
-      {threat:'CEO/CFO executive impersonation',level:'HIGH',cls:'cs-risk'},
-      {threat:'Fake ACH/wire payment confirmations',level:'HIGH',cls:'cs-risk'},
-      {threat:'Payroll diversion via HR impersonation',level:'MEDIUM',cls:'cs-monitor'}
+      {threat:'Business Email Compromise (wire fraud)',level:'CRITICAL',cls:'cs-risk',tk:'bec'},
+      {threat:'Bank/payment platform credential phishing',level:'CRITICAL',cls:'cs-risk',tk:'credential'},
+      {threat:'IRS/tax authority impersonation',level:'HIGH',cls:'cs-risk',tk:'awareness'},
+      {threat:'CEO/CFO executive impersonation',level:'HIGH',cls:'cs-risk',tk:'bec'},
+      {threat:'Fake ACH/wire payment confirmations',level:'HIGH',cls:'cs-risk',tk:'data'},
+      {threat:'Payroll diversion via HR impersonation',level:'MEDIUM',cls:'cs-monitor',tk:'bec'}
     ]
   },
 
@@ -1068,12 +1068,12 @@ const SECTORS = {
       ]
     },
     threatLandscape: [
-      {threat:'Security clearance phishing',level:'CRITICAL',cls:'cs-risk'},
-      {threat:'Federal agency impersonation (FEMA, IRS, SSA)',level:'CRITICAL',cls:'cs-risk'},
-      {threat:'Login.gov / PIV credential theft',level:'HIGH',cls:'cs-risk'},
-      {threat:'Fake government grant schemes',level:'HIGH',cls:'cs-risk'},
-      {threat:'Spear phishing targeting federal employees',level:'CRITICAL',cls:'cs-risk'},
-      {threat:'Nation-state sponsored phishing campaigns',level:'CRITICAL',cls:'cs-risk'}
+      {threat:'Security clearance phishing',level:'CRITICAL',cls:'cs-risk',tk:'credential'},
+      {threat:'Federal agency impersonation (FEMA, IRS, SSA)',level:'CRITICAL',cls:'cs-risk',tk:'awareness'},
+      {threat:'Login.gov / PIV credential theft',level:'HIGH',cls:'cs-risk',tk:'credential'},
+      {threat:'Fake government grant schemes',level:'HIGH',cls:'cs-risk',tk:'data'},
+      {threat:'Spear phishing targeting federal employees',level:'CRITICAL',cls:'cs-risk',tk:'incident'},
+      {threat:'Nation-state sponsored phishing campaigns',level:'CRITICAL',cls:'cs-risk',tk:'incident'}
     ]
   },
 
@@ -1131,12 +1131,12 @@ const SECTORS = {
       ]
     },
     threatLandscape: [
-      {threat:'LMS credential phishing (Canvas, Blackboard)',level:'HIGH',cls:'cs-risk'},
-      {threat:'FAFSA and financial aid fraud',level:'CRITICAL',cls:'cs-risk'},
-      {threat:'Student loan forgiveness scams',level:'HIGH',cls:'cs-risk'},
-      {threat:'Student record exfiltration (FERPA breach)',level:'CRITICAL',cls:'cs-risk'},
-      {threat:'Ransomware targeting university networks',level:'CRITICAL',cls:'cs-risk'},
-      {threat:'Faculty/staff payroll diversion',level:'MEDIUM',cls:'cs-monitor'}
+      {threat:'LMS credential phishing (Canvas, Blackboard)',level:'HIGH',cls:'cs-risk',tk:'credential'},
+      {threat:'FAFSA and financial aid fraud',level:'CRITICAL',cls:'cs-risk',tk:'data'},
+      {threat:'Student loan forgiveness scams',level:'HIGH',cls:'cs-risk',tk:'awareness'},
+      {threat:'Student record exfiltration (FERPA breach)',level:'CRITICAL',cls:'cs-risk',tk:'transmission'},
+      {threat:'Ransomware targeting university networks',level:'CRITICAL',cls:'cs-risk',tk:'malware'},
+      {threat:'Faculty/staff payroll diversion',level:'MEDIUM',cls:'cs-monitor',tk:'bec'}
     ]
   },
 
@@ -1196,12 +1196,12 @@ const SECTORS = {
       ]
     },
     threatLandscape: [
-      {threat:'IT helpdesk credential phishing',level:'HIGH',cls:'cs-risk'},
-      {threat:'CEO/executive impersonation BEC',level:'CRITICAL',cls:'cs-risk'},
-      {threat:'DocuSign / e-signature phishing',level:'HIGH',cls:'cs-risk'},
-      {threat:'Microsoft 365 / Azure credential theft',level:'CRITICAL',cls:'cs-risk'},
-      {threat:'Supply chain vendor impersonation',level:'HIGH',cls:'cs-risk'},
-      {threat:'Ransomware via macro-enabled documents',level:'CRITICAL',cls:'cs-risk'}
+      {threat:'IT helpdesk credential phishing',level:'HIGH',cls:'cs-risk',tk:'credential'},
+      {threat:'CEO/executive impersonation BEC',level:'CRITICAL',cls:'cs-risk',tk:'bec'},
+      {threat:'DocuSign / e-signature phishing',level:'HIGH',cls:'cs-risk',tk:'credential'},
+      {threat:'Microsoft 365 / Azure credential theft',level:'CRITICAL',cls:'cs-risk',tk:'credential'},
+      {threat:'Supply chain vendor impersonation',level:'HIGH',cls:'cs-risk',tk:'incident'},
+      {threat:'Ransomware via macro-enabled documents',level:'CRITICAL',cls:'cs-risk',tk:'malware'}
     ]
   }
 };
@@ -1780,23 +1780,59 @@ function renderCompliancePanel() {
   const sec = SECTORS[currentSector];
   const fw = sec.complianceFramework;
   const triggers = sessionTriggers[currentSector];
-  const triggerEntries = Object.entries(triggers);
+  const triggerEntries = Object.entries(triggers).filter(([,n]) => n > 0);
   const totalHits = triggerEntries.reduce((s,[,n])=>s+n,0);
 
+  // Exposure score
+  const allControls = fw.sections.flatMap(s => s.controls);
+  const triggeredControls = allControls.filter(c => c.tk && (triggers[c.tk]||0) > 0).length;
+  const exposurePct = allControls.length > 0 ? Math.round((triggeredControls / allControls.length) * 100) : 0;
+  const exposureColor = exposurePct >= 50 ? 'var(--red)' : exposurePct >= 25 ? 'var(--amber)' : exposurePct > 0 ? 'var(--amber)' : 'var(--accent)';
+
+  // Session trigger summary
   const sessionHtml = totalHits > 0
     ? `<div class="comp-section" style="border-color:var(--amber-border);background:var(--amber-bg)">
-        <div class="comp-section-title" style="color:var(--amber)">⚡ Session Triggers — ${totalHits} detection${totalHits!==1?'s':''} this session</div>
-        ${triggerEntries.map(([k,n])=>`<div class="comp-control"><span>${TRIGGER_LABELS[k]||k}</span><span class="comp-status cs-triggered">${n} trigger${n!==1?'s':''}</span></div>`).join('')}
+        <div class="comp-section-title" style="color:var(--amber)">⚡ Active Detections — ${totalHits} hit${totalHits!==1?'s':''} this session</div>
+        ${triggerEntries.map(([k,n])=>`<div class="comp-control"><span>${TRIGGER_LABELS[k]||k}</span><span class="comp-status cs-triggered">${n} hit${n!==1?'s':''}</span></div>`).join('')}
       </div>`
-    : `<div class="note-box" style="margin-bottom:10px">
-        <div class="note-title">ℹ️ No session detections yet</div>
-        Analyze emails or URLs to see which controls get triggered. Controls highlighted in amber indicate live detections.
+    : `<div style="text-align:center;padding:14px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;margin-bottom:12px;font-size:0.78rem;color:var(--text3)">
+        No detections yet — scan emails or URLs to see live compliance impact
       </div>`;
 
+  // Incident log — sector-filtered scan history
+  const sectorScansLog = scanLog.filter(s => s.sector === sec.name).slice(0, 6);
+  const incidentLogHtml = sectorScansLog.length > 0 ? `
+    <div class="comp-section" style="margin-top:4px">
+      <div class="comp-section-title" style="color:var(--text2)">📁 Incident Log — ${sec.name}</div>
+      ${sectorScansLog.map(s => `
+        <div style="padding:8px 0;border-bottom:1px solid var(--border)">
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+            <span style="font-size:0.78rem;color:var(--text);font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1">${s.detail}</span>
+            <span class="comp-status ${s.vclass==='danger'?'cs-risk':s.vclass==='warn'?'cs-triggered':'cs-ok'}" style="flex-shrink:0">${s.label}</span>
+          </div>
+          ${s.subject?`<div style="font-family:'IBM Plex Mono',monospace;font-size:0.65rem;color:var(--text3);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${s.subject}</div>`:''}
+          <div style="font-size:0.65rem;color:var(--text3);margin-top:2px">Score: ${s.score}/100 · ${s.type.toUpperCase()} · ${s.time}</div>
+        </div>`).join('')}
+    </div>` : '';
+
   document.getElementById('compliance-content').innerHTML = `
-    <div style="margin-bottom:12px">
-      <div style="font-family:'IBM Plex Mono',monospace;font-size:0.82rem;color:var(--text);margin-bottom:4px">${sec.icon} ${sec.name} Sector</div>
-      <div style="font-size:0.75rem;color:var(--text2)">${fw.title}</div>
+    <div style="margin-bottom:14px">
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:0.82rem;color:var(--text);margin-bottom:10px">${sec.icon} ${sec.name} · ${fw.title}</div>
+      <div style="display:flex;align-items:center;gap:14px;padding:14px;background:var(--bg3);border:1px solid var(--border);border-radius:8px">
+        <div style="flex:1">
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:0.65rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px">Compliance Exposure</div>
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:1.6rem;font-weight:600;color:${exposureColor};line-height:1">${exposurePct}%</div>
+          <div style="font-size:0.68rem;color:var(--text3);margin-top:4px">${triggeredControls} of ${allControls.length} controls triggered</div>
+        </div>
+        <div style="position:relative;width:64px;height:64px;flex-shrink:0">
+          <svg viewBox="0 0 36 36" style="width:64px;height:64px;transform:rotate(-90deg)">
+            <circle cx="18" cy="18" r="15.9" fill="none" stroke="var(--bg4)" stroke-width="3.2"/>
+            <circle cx="18" cy="18" r="15.9" fill="none" stroke="${exposureColor}" stroke-width="3.2"
+              stroke-dasharray="${exposurePct} ${100-exposurePct}" stroke-linecap="round"/>
+          </svg>
+          <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:0.72rem;font-weight:600;color:${exposureColor}">${exposurePct}%</div>
+        </div>
+      </div>
     </div>
     ${sessionHtml}
     ${fw.sections.map(s=>`
@@ -1809,22 +1845,90 @@ function renderCompliancePanel() {
           return `<div class="comp-control" title="${count>0?`Triggered ${count} time${count!==1?'s':''} this session`:''}"><span>${c.name}</span><span class="comp-status ${statusCls}">${statusText}</span></div>`;
         }).join('')}
       </div>`).join('')}
-    <div class="note-box">
-      <div class="note-title">📌 About This Framework</div>
-      PhishGuard Pro maps every detected threat to the relevant ${fw.title} control, helping ${sec.name.toLowerCase()} organizations document their security posture and demonstrate compliance during audits. Controls marked <strong style="color:var(--amber)">TRIGGERED</strong> reflect live detections in this session.
+    ${incidentLogHtml}
+    <button onclick="exportIncidentReport()" style="display:flex;align-items:center;justify-content:center;gap:8px;padding:9px 18px;border-radius:7px;font-size:0.8rem;font-weight:600;cursor:pointer;border:1px solid var(--border2);background:var(--bg3);color:var(--text2);font-family:'IBM Plex Sans',sans-serif;width:100%;margin-top:12px;transition:all 0.2s" onmouseover="this.style.borderColor='var(--accent-border)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--border2)';this.style.color='var(--text2)'">
+      📄 Generate Incident Report
+    </button>`;
+
+  // Right column — live detected threats
+  const totalScansForSector = sectorScans[currentSector] || 0;
+  const threatItems = sec.threatLandscape.map(t => {
+    const count = t.tk ? (triggers[t.tk]||0) : 0;
+    return `<div class="comp-control">
+      <span style="color:${count>0?'var(--text)':'var(--text3)'}">${t.threat}</span>
+      <span class="comp-status ${count>0?'cs-triggered':'cs-monitor'}">${count>0?`DETECTED (${count})`:'NOT DETECTED'}</span>
     </div>`;
+  }).join('');
 
   document.getElementById('threat-landscape').innerHTML = `
-    <div style="margin-bottom:12px;font-size:0.78rem;color:var(--text2)">Common attack vectors targeting <strong style="color:var(--text)">${sec.name}</strong> sector organizations:</div>
-    <div class="comp-section">
-      ${sec.threatLandscape.map(t=>`<div class="comp-control"><span>${t.threat}</span><span class="comp-status ${t.cls}">${t.level}</span></div>`).join('')}
-    </div>
-    <div class="note-box" style="margin-top:10px">
-      <div class="note-title">⚖️ Compliance Exposure</div>
-      <strong style="color:var(--text)">Active Framework:</strong> ${sec.compliance}<br>
-      <strong style="color:var(--text)">Sector:</strong> ${sec.name}<br>
-      <strong style="color:var(--text)">Detection Coverage:</strong> ${sec.sectorKeywords.length} sector-specific keywords · ${sec.spoofDomains.length} spoof patterns · ${HIGH_RISK_TLDS.length} high-risk TLDs
+    ${totalScansForSector===0 ? `<div style="text-align:center;padding:16px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;margin-bottom:12px;font-size:0.78rem;color:var(--text3)">
+      Scan emails or URLs in <strong style="color:var(--text)">${sec.name}</strong> sector to detect active threats
+    </div>` : ''}
+    <div class="comp-section">${threatItems}</div>
+    <div style="padding:12px;background:var(--bg3);border:1px solid var(--border);border-radius:7px;margin-top:10px">
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:0.65rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px">Detection Coverage · ${sec.name}</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:0.75rem;color:var(--text2)">
+        <div>Sector scans: <strong style="color:var(--text)">${totalScansForSector}</strong></div>
+        <div>Framework: <strong style="color:var(--text)">${sec.compliance}</strong></div>
+        <div>Keywords: <strong style="color:var(--text)">${sec.sectorKeywords.length}</strong></div>
+        <div>Spoof patterns: <strong style="color:var(--text)">${sec.spoofDomains.length}</strong></div>
+      </div>
     </div>`;
+}
+
+function exportIncidentReport() {
+  const sec = SECTORS[currentSector];
+  const fw = sec.complianceFramework;
+  const triggers = sessionTriggers[currentSector];
+  const allControls = fw.sections.flatMap(s => s.controls);
+  const triggeredCount = allControls.filter(c => c.tk && (triggers[c.tk]||0) > 0).length;
+  const exposurePct = allControls.length > 0 ? Math.round((triggeredCount / allControls.length) * 100) : 0;
+  const sectorScansCount = sectorScans[currentSector] || 0;
+
+  const lines = [
+    'PhishGuard Pro — Compliance Incident Report',
+    '='.repeat(52),
+    `Generated:     ${new Date().toLocaleString()}`,
+    `Sector:        ${sec.name}`,
+    `Framework:     ${sec.compliance}`,
+    `Sector Scans:  ${sectorScansCount}  |  Total Scans: ${eTotal + uTotal}`,
+    `Exposure:      ${exposurePct}% (${triggeredCount} of ${allControls.length} controls triggered)`,
+    '',
+    '=== COMPLIANCE CONTROLS ===',
+    ...fw.sections.flatMap(s => [
+      '',
+      s.title,
+      ...s.controls.map(c => {
+        const count = c.tk ? (triggers[c.tk]||0) : 0;
+        return `  [${count>0?`TRIGGERED x${count}`:' not triggered '}] ${c.name}`;
+      })
+    ]),
+    '',
+    '=== DETECTED THREATS ===',
+    ...sec.threatLandscape.map(t => {
+      const count = t.tk ? (triggers[t.tk]||0) : 0;
+      return `  [${count>0?`DETECTED  x${count}`:' not detected'}] ${t.threat}`;
+    }),
+    '',
+    '=== SCAN INCIDENT LOG ===',
+    ...(scanLog.filter(s=>s.sector===sec.name).length > 0
+      ? scanLog.filter(s=>s.sector===sec.name).map(s =>
+          `  [${s.label.padEnd(10)}] ${s.detail}${s.subject?' | '+s.subject:''} | Score: ${s.score}/100 | ${s.time}`)
+      : ['  No incidents logged for this sector yet']),
+    '',
+    '-'.repeat(52),
+    'PhishGuard Pro · Open Source · Multi-Sector Phishing & BEC Detection'
+  ];
+
+  const blob = new Blob([lines.join('\n')], {type:'text/plain'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `PhishGuardPro_${sec.name}_Incident_Report_${new Date().toISOString().slice(0,10)}.txt`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
 }
 
 // ═══════════════════════════════════════════════════
