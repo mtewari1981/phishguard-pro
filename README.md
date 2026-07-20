@@ -9,7 +9,7 @@
 ![Frameworks](https://img.shields.io/badge/compliance%20frameworks-13-purple?style=flat-square)
 ![Gmail](https://img.shields.io/badge/Gmail-OAuth%202.0-red?style=flat-square&logo=gmail)
 
-An **open-source, browser-based** educational and defensive cybersecurity platform for detecting phishing threats across Healthcare, Finance, Government, Education, and Enterprise — with real-time compliance mapping to 13 federal and international security frameworks. 
+An **open-source, browser-based** multi-sector threat detection platform for identifying phishing, BEC, and social engineering attacks across Healthcare, Finance, Government, Education, and Enterprise — with live threat intelligence, compliance impact tracking, and incident reporting.
 
 🌐 **Live Site:** [https://mtewari1981.github.io/phishguard-pro/](https://mtewari1981.github.io/phishguard-pro/)
 
@@ -33,9 +33,9 @@ An **open-source, browser-based** educational and defensive cybersecurity platfo
 
 ## Overview
 
-PhishGuard Pro is a client-side threat detection platform that analyzes suspicious emails and URLs for phishing, social engineering, malware delivery, and sector-targeted attacks.
+PhishGuard Pro is a client-side threat detection platform that analyzes suspicious emails and URLs for phishing, BEC, social engineering, malware delivery, and sector-targeted attacks across five critical infrastructure sectors.
 
-PhishGuard Pro is designed not only to analyze phishing emails and suspicious URLs but also to improve cybersecurity awareness by helping users understand *why* a message or website appears malicious. By combining threat analysis with explanations aligned to recognized cybersecurity frameworks, the platform serves as both a practical defensive tool and a learning resource for organizations seeking to strengthen their cybersecurity posture.
+Every finding is mapped to its relevant compliance control in real time — so when a threat is detected, you see exactly which HIPAA, PCI-DSS, FISMA, FERPA, or ISO 27001 control it implicates, logged to a downloadable incident report.
 
 **Key principles:**
 - 🔒 **Privacy-first** — core analysis runs entirely in your browser; no backend, no tracking, no accounts required
@@ -112,11 +112,15 @@ All API keys are stored in your browser's `localStorage` only and are never logg
 
 > **How API keys work for visitors:** Each user enters their own API keys — PhishTank, AbuseIPDB, VirusTotal, and Anthropic. Keys are saved in their own browser and never sent to anyone else. This means every user brings their own credentials, so there are no shared costs and no risk of your keys being used by others. Anthropic keys are free to create at [console.anthropic.com](https://console.anthropic.com/) and cost fractions of a cent per scan — set a monthly budget limit to keep spend in check.
 
-### 📋 Compliance Framework Tab
-- Dynamically renders the full compliance framework for the active sector
-- Maps each control to its relevant threat category with risk severity ratings
-- Displays the sector-specific threat landscape
-- Controls show a live **TRIGGERED** status (amber highlight) when your actual scan findings match the control's threat category — so you can see exactly which regulations a real phishing attempt would implicate
+### 📋 Compliance Impact Tab
+Detection-driven compliance view — everything updates from real scan results, nothing is static:
+
+- **Compliance Exposure Score** — live radial gauge showing what % of the sector's compliance controls have been triggered by actual scans this session; color-coded from teal to red as exposure climbs
+- **Compliance Status** — all framework controls show `TRIGGERED (N)` in amber when your scans have matched that control's threat category, or their baseline status when not yet triggered
+- **Active Detections** — summary of which threat categories fired and how many times
+- **Detected Threats This Session** — all sector threat entries show `DETECTED (N)` or `NOT DETECTED` based on real findings; no static severity labels
+- **Compliance Incident Log** — sector-filtered list of every scan with verdict, risk score, and timestamp — your audit trail
+- **Generate Incident Report** — downloads a plain-text `.txt` report with exposure score, per-control status, per-threat detection counts, and the full incident log for the active sector
 
 ### 📊 Dashboard
 - Aggregate scan statistics across all 5 sectors
@@ -275,11 +279,11 @@ Then open `http://localhost:3000` in your browser and click the **Gmail Integrat
 
 ## Use Cases
 
-- **Security awareness training** — use the built-in email samples to train employees on real attack patterns
 - **SOC triage** — rapid first-pass verdict on suspicious URLs and emails before deeper investigation
-- **Compliance audits** — demonstrate phishing detection coverage mapped to HIPAA, PCI-DSS, FISMA, and other frameworks
-- **Incident response** — quickly assess whether a reported email or link is malicious
-- **Education** — interactive platform for teaching phishing recognition by sector
+- **Incident response** — quickly assess whether a reported email or link is malicious; download a compliance incident report as evidence
+- **Compliance audits** — demonstrate phishing detection coverage mapped to HIPAA, PCI-DSS, FISMA, FERPA, and ISO 27001 with live exposure scoring
+- **BEC detection** — identify executive impersonation, wire fraud language, and invoice redirect attempts across any sector
+- **Security team testing** — use built-in sector-specific phishing samples to validate detection coverage
 
 ---
 

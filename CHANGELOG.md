@@ -4,6 +4,50 @@ All notable changes to PhishGuard Pro are documented here.
 
 ---
 
+## [2026-07-20] — Compliance Impact: Live Detection-Driven Tab
+
+### Changed — Compliance tab transformed from reference panel into live detection view
+
+**Renamed:**
+- Tab: "Compliance Framework" → **Compliance Impact**
+- Left card: "Active Compliance Framework" → **Compliance Status**
+- Right card: "Sector Threat Landscape" → **Detected Threats This Session**
+
+### Added — Compliance Exposure Score
+- Live percentage gauge at the top of the Compliance Status card
+- SVG radial progress ring shows what % of the sector's compliance controls have been triggered by actual scans this session
+- Color-coded: teal (0%) → amber (25%+) → red (50%+)
+- Shows "X of Y controls triggered" below the percentage
+
+### Added — Live Detected Threats panel
+- All 30 threat landscape entries (5 sectors × 6 threats) now show `DETECTED (N)` in amber or `NOT DETECTED` in neutral, driven entirely by real scan results
+- Before any scans are run, a prompt directs the user to scan first
+- Replaces the previous static CRITICAL/HIGH/MEDIUM severity labels that showed the same values regardless of what had actually been detected
+
+### Added — Compliance Incident Log
+- Sector-filtered scan history appears below the compliance controls on the left card
+- Each entry shows: sender/URL, subject line, verdict badge (SAFE/SUSPICIOUS/PHISHING), risk score, scan type, and timestamp
+- Only entries from the currently active sector are shown
+
+### Added — Generate Incident Report button
+- Downloads a plain-text `.txt` audit report with:
+  - Compliance exposure score and triggered control count
+  - Per-control TRIGGERED / not triggered status across all framework sections
+  - Per-threat DETECTED / not detected status with hit counts
+  - Full incident log for the active sector with timestamps
+- File named `PhishGuardPro_{Sector}_Incident_Report_{date}.txt`
+
+### Updated — Mission strip
+- Removed "learning resource" framing
+- Now reads: *"Real-time phishing, BEC, and social engineering detection across Healthcare, Finance, Government, Education, and Enterprise — with live threat intelligence, compliance impact tracking, and incident reporting."*
+
+### Under the hood
+- Added `tk` field to all 30 `threatLandscape` entries across all 5 sectors, mapping each threat to its `sessionTriggers` key
+- `renderCompliancePanel()` rewritten to derive all content from live `sessionTriggers` and `scanLog` data rather than static sector definitions
+- New `exportIncidentReport()` function handles report generation and browser download
+
+---
+
 ## [2026-07-09] — Open URL Button & VirusTotal Auto-Submit
 
 ### Added — Open URL button on URL analysis results
